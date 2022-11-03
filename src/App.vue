@@ -1,26 +1,53 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+
+    <the-left-menu></the-left-menu>
+    <the-header></the-header>
+    <div class="app-content">
+      <div class="app-content-router-view">
+        <the-employee></the-employee>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TheHeader from '@/layout/header/TheHeader.vue';
+import TheLeftMenu from '@/layout/sidebar/TheSideBar.vue';
+import TheEmployee from "@/views/employee/Employee.vue"
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
+    TheHeader,
+    TheLeftMenu,
+    TheEmployee
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+//reset style
+* {
+  padding: 0;
+  margin: 0;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  width: 100%;
+  height: 100vh;
+}
+
+#app {
+  .app-content {
+    width: calc(100% - 200px);
+    height: 100vh;
+    display: flex;
+
+    &-router-view {
+      flex-grow: 2;
+      padding: 24px;
+      background-color: bisque;
+    }
+  }
 }
 </style>
