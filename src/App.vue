@@ -1,11 +1,12 @@
 <template>
   <div id="app">
-
     <the-left-menu></the-left-menu>
     <the-header></the-header>
     <div class="app-content">
       <div class="app-content-router-view">
-        <the-employee></the-employee>
+        <Suspense>
+          <ms-employee></ms-employee>
+        </Suspense>
       </div>
     </div>
   </div>
@@ -14,13 +15,13 @@
 <script>
 import TheHeader from '@/layout/header/TheHeader.vue';
 import TheLeftMenu from '@/layout/sidebar/TheSideBar.vue';
-import TheEmployee from "@/views/employee/Employee.vue"
+import MsEmployee from "@/views/employee/Employee.vue"
 
 export default {
   components: {
     TheHeader,
     TheLeftMenu,
-    TheEmployee
+    MsEmployee
   }
 }
 </script>

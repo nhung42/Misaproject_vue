@@ -1,6 +1,6 @@
 <template>
     <tr class="ms-tr">
-        <ms-td v-if="selectedCol" :config="configSelect" v-modelvalue="select">
+        <ms-td v-if="selectedCol" :config="configSelect" v-model="select">
         </ms-td>
         <ms-td v-for="col in columns" :key="col" :config="col" :value="data[col.field]">
         </ms-td>

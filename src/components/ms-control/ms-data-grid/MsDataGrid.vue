@@ -10,15 +10,16 @@
                             </div>
                         </th>
 
-                        <th ref="th" v-for="col in columns" :key="col" :config="col" :allData="allData">
+                        <th ref="th" v-for="col in columns" :key="col" :config="col">
                             {{ col.title }}
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <ms-tr v-for="(item, i) in allData" :class="selectedIndex[i] ? 'active-tr' : ''" :key="item"
-                        :data="item" :columns="columns" :selectedCol="selectedCol" v-model="selectedIndex[i]"
-                        @click="handleClick(i)" @dblclick="handleDoubleClick(item)">
+                    <ms-tr v-for="(item, i) in allData" :key="item.EmployeeId" :data="item" :columns="columns"
+                        :selectedCol="selectedCol" v-model="selectedIndex[i]" @click="handleClick(i)"
+                        @dblclick="handleDoubleClick(item)">
+                        {{ item.EmployeeId }}
                     </ms-tr>
                 </tbody>
                 <tfoot>
@@ -66,7 +67,7 @@
                 </tfoot>
             </table>
         </div>
-        <ms-popup-asset v-if="isShowPopup" :formModel="pram" :dataPram="pramData"></ms-popup-asset>
+        <!-- <ms-popup-asset v-if="isShowPopup" :formModel="pram" :dataPram="pramData"></ms-popup-asset> -->
     </div>
 </template>
 <script>
@@ -87,7 +88,7 @@ import MsCheckbox from "@/components/ms-control/ms-check-box/MsCheckBox.vue";
 
 export default defineComponent({
     name: "MsGrid",
-    components: {  MsTr,MsCheckbox },
+    components: { MsTr, MsCheckbox },
     props: {
         selectedCol: {
             default: false,
@@ -181,7 +182,7 @@ export default defineComponent({
         };
 
         onMounted(() => {
-            proxy.handleSum();
+            // proxy.handleSum();
         });
         return {
             selected,
