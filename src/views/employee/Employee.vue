@@ -1,15 +1,19 @@
 <template>
-    <div class="contrainer-toolbar">
-        <div class="page-title">
-            Nhân viên
+    <div class="ms-content">
+        <div class="contrainer-toolbar">
+            <div class="page-title">
+                Nhân viên
+            </div>
+            <ms-tooltip content="Thêm mới nhân viên" placement="bottom" right="bottom">
+                <ms-button ref="MsPopupEmployee" text="Thêm mới nhân viên" id="btn-add" :radius="true"
+                    @click="handleClickAdd">
+                </ms-button>
+            </ms-tooltip>
+            <ms-popup-employee v-if="isShowPopup" :formModel="pram" @closePopup="handlClosePopup"></ms-popup-employee>
         </div>
-        <ms-tooltip content="Thêm mới nhân viên" placement="bottom" right="bottom">
-            <ms-button ref="MsPopupAsset" text="Thêm mới nhân viên" id="btn-add" :radius="true" @click="handleClickAdd">
-            </ms-button>
-        </ms-tooltip>
         <div class="page__toolbar">
             <ms-input :hasLabel="false" leftIcon="ic-search" id="txt-search" :radius="true" placeholder="Tìm kiếm "
-                :disabledMessage="false" message=""></ms-input>
+                :disabledMessage="false" message="" class="input_search"></ms-input>
             <ms-tooltip content="Lấy lại dữ liệu" placement="bottom" right="bottom">
                 <div class="icon-reload margin-left-10px"></div>
             </ms-tooltip>
@@ -17,8 +21,8 @@
 
         <ms-grid :columns="columns" :allData="allData.value" :selectedCol="true" v-model="dataSelected">
         </ms-grid>
-    </div>
 
+    </div>
 </template>
 
 <script>
@@ -27,6 +31,8 @@ import MsButton from "@/components/ms-control/ms-button/MsButton.vue";
 import MsInput from "@/components/ms-control/ms-text-box/MsTextBox.vue";
 import MsTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
 import Enum from "@/dictionary/enum.js";
+import MsPopupEmployee from "@/views/employee/EmployeePopup.vue";
+import MsLoading from "@/components/ms-control/loading/MsLoading.vue";
 import axios from 'axios';
 import {
     getCurrentInstance,
@@ -42,6 +48,8 @@ export default {
         MsInput,
         MsGrid,
         MsTooltip,
+        MsPopupEmployee,
+        MsLoading
     },
     methods: {
         close() {
@@ -54,25 +62,23 @@ export default {
         window.asset = proxy;
         //Loading form
         const isLoading = ref(false);
-
         const allData = ref([]);
         const Loading = ref(true);
         const dataSelected = ref([]);
         let pram = reactive({
             mode: 0,
-            fixed_employee_id: "",
+            employeeId: "",
         });
         async function loadData() {
             try {
-                // proxy.isLoading = true;
+                proxy.isLoading = true;
                 await axios
                     .get('https://amis.manhnv.net/api/v1/Employees/filter')
                     .then(response => {
                         let data = response.data?.Data;
                         proxy.allData.value = data;
-                        console.log(allData);
                     })
-                // proxy.isLoading = false;
+                proxy.isLoading = false;
             } catch (error) {
                 console.log(error);
             }
@@ -93,17 +99,24 @@ export default {
             proxy.pram.mode = Enum.Mode.Add;
             proxy.isShowPopup = true;
         };
+        /**
+         * Xử lí sự kiện đóng popup
+         * @author DuongNhung
+         */
+        const handlClosePopup = (isShowPopup) => {
+            proxy.isShowPopup = false;
+        };
         const clickMenu = async (action, val) => {
             switch (action) {
                 case 0: {
                     proxy.pram.mode = Enum.Mode.Update;
-                    proxy.pram.fixed_employee_id = val;
+                    proxy.pram.employeeId = val;
                     proxy.isShowPopup = true;
                     break;
                 }
                 case 1: {
                     proxy.pram.mode = Enum.Mode.Duplicate;
-                    proxy.pram.fixed_employee_id = val;
+                    proxy.pram.employeeId = val;
                     proxy.isShowPopup = true;
                     break;
                 }
@@ -133,7 +146,7 @@ export default {
                 field: "DateOfBirth",
                 title: "Ngày sinh",
                 type: "Date",
-                width: 120,
+                width: 100,
             },
             {
                 field: "IdentityNumber",
@@ -173,13 +186,13 @@ export default {
             },
             {
                 field: "",
-                title: "",
+                title: "Chức năng",
                 type: "Action",
                 width: 80,
             },
         ]);
 
-
+        // const isShowPopup = false; // ref(false);
 
         return {
             columns,
@@ -188,6 +201,8 @@ export default {
             isLoading,
             Loading,
             clickMenu,
+            handlClosePopup,
+            // isShowPopup,
             pram,
             loadData,
             handleClickAdd,

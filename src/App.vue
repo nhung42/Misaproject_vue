@@ -36,18 +36,18 @@ export default {
 #app {
   width: 100%;
   height: 100vh;
+  box-sizing: border-box;
 }
 
 #app {
   .app-content {
     width: calc(100% - 200px);
-    height: 100vh;
+    height: calc(100vh - 56px);
     display: flex;
 
     &-router-view {
-      flex-grow: 2;
-      padding: 24px;
-      background-color: bisque;
+      width: 100%;
+      background-color: #eceef1;
     }
   }
 }

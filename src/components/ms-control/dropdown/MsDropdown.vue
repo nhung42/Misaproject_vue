@@ -8,7 +8,7 @@
             <input type="text" v-model="disp" :tabindex="tabindex" ref="input" :placeholder="placeholder"
                 :readonly="readonly" v-on="eventListsioner" @keyup="search" @click="isShowMenu = true" />
             <div :class="[
-                'app-icon icon--right',
+                'app-icon combobox__btn',
                 rightIcon,
                 disabled ? 'disabled-icon' : '',
             ]" v-if="rightIcon" @click="isShowMenu = !isShowMenu"></div>
@@ -34,7 +34,17 @@
     </div>
 </template>
 <script>
-
+import {
+    getCurrentInstance,
+    onMounted,
+    ref,
+    watch,
+    computed,
+    resolveComponent as _resolveComponent,
+    mergeProps as _mergeProps,
+    nextTick,
+    reactive
+} from "vue";
 import DropdownItem from "./MsMenuItem.vue";
 export default {
     name: "MsDropdown",

@@ -6,12 +6,14 @@
       </template>
 
       <template v-else-if="config.type == ColumnType.Action">
-        <div class="action-group">
-          <div v-for="btn in config.action" :key="btn">
-
-            <div class="app-icon icon" :class="btn.icon" @click="btn.click && btn.click(btn.command, data)"></div>
-
-          </div>
+        <div class="edit-option">
+          <div class="text-edit">Sửa</div>
+          <button class="icon arrow-up--blueicon hw-16">
+          </button>
+        </div>
+        <div v-show="isShowOption && itemSelected.EmployeeId == employee.EmployeeId" class="dlg-option"
+          v-if="this.isShowOption == true" v-click-away="closeOption">
+          <div @click="deleteEmployee" class="option option-delete">Xoá</div>
         </div>
       </template>
 
@@ -32,6 +34,7 @@ import {
   watch
 } from "vue";
 
+
 const ColumnType = {
   Text: 'Text',
   Number: 'Number',
@@ -39,6 +42,7 @@ const ColumnType = {
   AlignCenter: 'AlignCenter',
   AlignLeft: 'AlignLeft',
   AlignRight: 'AlignRight',
+  Action: 'Action',
 }
 
 export default {
@@ -158,6 +162,33 @@ export default {
 </script>
   
 <style lang="scss" scope="">
+.sticky_body_right {
+  position: sticky;
+  right: 0px;
+  background-color: #fff;
+}
+
+.edit-option {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.text-edit {
+  cursor: pointer;
+  color: #0075c0;
+  margin-right: 10px;
+  font-weight: 700;
+}
+
+.dlg-option {
+  z-index: 5;
+  background-color: #fff;
+  position: absolute;
+  border: 1px solid #babec5;
+}
+
 .action-group {
   display: flex;
   justify-content: center;

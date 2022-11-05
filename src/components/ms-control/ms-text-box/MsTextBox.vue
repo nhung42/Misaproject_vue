@@ -46,7 +46,7 @@ export default defineComponent({
         modelValue: {
             default: null,
         },
-       
+
         placeholder: {
             default: null,
             type: [Number, String],
@@ -192,7 +192,7 @@ export default defineComponent({
     },
 });
 </script>
-<style lang="scss" scope="">
+<style lang="scss">
 @import "@/style/components/MsInput.scss";
 </style>
   

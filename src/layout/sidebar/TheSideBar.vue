@@ -4,8 +4,7 @@
             <a class="icon-9-cham">
             </a>
             <a class="logo">
-                <img src="@/assets/img/Logo_Module_TiengViet_White.66947422.svg" height="32px"
-                    width="96px" />
+                <img src="@/assets/img/Logo_Module_TiengViet_White.66947422.svg" height="32" width="96" />
             </a>
         </div>
         <div class="menu">
@@ -25,7 +24,7 @@
     </div>
 </template>
 <script>
-import {ref, getCurrentInstance ,computed,onMounted,watch} from "vue";
+import { ref, getCurrentInstance, computed, onMounted, watch } from "vue";
 import MsTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
 import { collapsed, sideBarWidth } from "./State";
 export default {
@@ -35,7 +34,7 @@ export default {
         return {};
     },
     computed: {
-      
+
     },
 
     setup(props, { emit }) {
@@ -52,9 +51,9 @@ export default {
             proxy.activeMenu();
         });
 
-        const   menuItems = computed(()=>{
+        const menuItems = computed(() => {
             return proxy.getMenuItems();
-        }) 
+        })
         watch(
             () => activeItem.value,
             (newVal) => {
@@ -165,7 +164,7 @@ export default {
         return {
             getMenuItems,
             collapsed,
-         
+
             sideBarWidth,
             Listsioner,
             isActive,

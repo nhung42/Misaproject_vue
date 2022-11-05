@@ -23,8 +23,12 @@ export default {
 </script>
 <style lang="scss">
 @import "@/style/common/icon.scss";
+
 .app-header {
     height: 56px;
+    width: calc(100% - 200px);
+    float: right;
+
     .nav {
         display: flex;
         justify-content: space-between;

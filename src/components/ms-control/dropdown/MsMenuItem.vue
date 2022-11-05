@@ -6,7 +6,7 @@
   </ms-tooltip>
 </template>
 <script>
- import MsTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
+import MsTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
 export default {
   name: "MsItem",
   components: {
@@ -64,7 +64,7 @@ export default {
 
   &:hover {
     transition: 0.2s;
-    background-color: #c7e0f5;
+    background-color: #caf6e3;
     cursor: pointer;
     border-radius: 4px;
 

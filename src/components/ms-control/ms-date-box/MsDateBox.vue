@@ -5,131 +5,60 @@
             <span v-if="hasInput">*</span>
         </label>
         <div class="flex-row" :class="[leftIcon ? 'has-icon' : '']">
-            <el-date-picker :id="id ? id : ''" class="input-text" format="DD/MM/YYYY" value-format="YYYY-MM-DDTHH:mm:ss"
-                type="date" ref="inputdate" :tabindex="tabindex" v-model="isValue" @change="changeValue"
-                @blur="changeValue" :placeholder="placeholder" :disabled="disabled || false"
-                :readonly="hasReadonly || false" />
-            <label :for="id">
-                <div :class="[
-                    'app-icon icon--right',
-                    rightIcon,
-                    disabled ? 'disabled-icon' : '',
-                ]" @click="handleClick" v-if="rightIcon"></div>
-            </label>
+            <date-picker :id="id || ''" class="input-text" v-model="dateValue" format="dd/MM/yyyy"
+                :placeholder="placeholder" :tabindex="tabindex">
+            </date-picker>
         </div>
         <span v-if="disabledMessage" class="error-message">{{
                 message ? message : ""
         }}</span>
     </div>
 </template>
+
 <script>
 import {
     defineComponent,
-    computed,
     ref,
     watch,
     nextTick,
     getCurrentInstance,
-    onBeforeMount,
-    reactive,
     onMounted,
 } from "vue";
+import DatePicker from "vuejs3-datepicker";
+import { defaultDateProps } from './DefaultProps';
 
 export default defineComponent({
-    name: "msInput",
-    props: {
-        modelValue: {
-            default: null,
-        },
-        configStyle: {
-            default: {},
-        },
-        placeholder: {
-            default: null,
-            type: [Number, String],
-        },
-        leftIcon: {
-            default: null,
-            type: String,
-        },
-        rightIcon: {
-            default: null,
-            type: String,
-        },
-        inputBoder: {
-            default: true,
-            type: Boolean,
-        },
-        disabled: {
-            default: false,
-            type: Boolean,
-        },
-        disabledMessage: {
-            default: false,
-            type: Boolean,
-        },
-        customWarring: {
-            default: null,
-            type: Object,
-        },
-        label: {
-            default: null,
-            type: String,
-        },
-        hasInput: {
-            default: false,
-            type: Boolean,
-        },
-        hasLabel: {
-            default: false,
-            type: Boolean,
-        },
-        hasReadonly: {
-            default: false,
-            type: Boolean,
-        },
-        id: {
-            default: null,
-            type: String,
-        },
-        message: {
-            default: null,
-            type: String,
-        },
-        valueField: {
-            default: null,
-            type: String,
-        },
-        tabindex: {
-            default: null,
-            type: [Number, String],
-        },
-    },
+    name: "msDateBox",
+    components: { DatePicker },
+    props: defaultDateProps,
     setup(props, { emit }) {
         const { proxy } = getCurrentInstance();
         window.ipdate = proxy;
-        const isValue = ref("");
+        const dateValue = ref("");
 
         watch(
             () => proxy.modelValue,
             (newVal) => {
-                proxy.isValue = newVal;
+                proxy.dateValue = newVal;
             }
         );
+
+        const changeValue = function (e) {
+            proxy.$emit("update:modelValue", proxy.dateValue);
+            nextTick(() => {
+                emit("changeValue", proxy.dateValue, proxy.valueField);
+            });
+        };
+
         onMounted(() => {
             proxy.changeValue();
         });
-        const changeValue = function (e) {
-            proxy.$emit("update:modelValue", proxy.isValue);
-            nextTick(() => {
-                emit("changeValue", proxy.isValue, proxy.valueField);
-            });
-        };
-        return { isValue, changeValue };
-    },
+
+        return { dateValue, changeValue };
+    }
 });
 </script>
 <style lang="scss" scope="">
-@import "/Misa_Project/amis-sme-ui/src/style/components/MsInputDate.scss";
+@import "@/style/components/MsInputDate.scss";
 </style>
   

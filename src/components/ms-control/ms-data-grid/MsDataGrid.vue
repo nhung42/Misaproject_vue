@@ -1,71 +1,60 @@
 <template>
     <div class="grid-container">
         <div class="grid-view">
-            <table>
-                <thead>
-                    <tr>
-                        <th v-if="selectedCol" style="width: 50px">
-                            <div class="th-inner">
-                                <ms-checkbox v-model="allSelected"></ms-checkbox>
-                            </div>
-                        </th>
+            <div class="div-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th v-if="selectedCol" style="width: 50px">
+                                <div class="th-inner">
+                                    <ms-checkbox v-model="allSelected"></ms-checkbox>
+                                </div>
+                            </th>
 
-                        <th ref="th" v-for="col in columns" :key="col" :config="col">
-                            {{ col.title }}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <ms-tr v-for="(item, i) in allData" :key="item.EmployeeId" :data="item" :columns="columns"
-                        :selectedCol="selectedCol" v-model="selectedIndex[i]" @click="handleClick(i)"
-                        @dblclick="handleDoubleClick(item)">
-                        {{ item.EmployeeId }}
-                    </ms-tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="6">
-                            <div class="container-tfooter-left">
-                                <div class="tfooter--left" style="font-size: 11px">
-                                    Tổng số:
-                                    <span style="font-size: 11px; font-weight: 700; margin: 0 4px">{{ allData.length
-                                    }}</span>
-                                    bản ghi
-                                </div>
-                                <div class="total-page">
-                                    <select>
-                                        <option class="item-total" value="20" selected>20</option>
-                                        <option class="item-total" value="50">50</option>
-                                        <option class="item-total" value="100">100</option>
-                                        <option class="item-total" value="200">200</option>
-                                    </select>
-                                    <div class="icon-bottom app-icon ic-angle_down"></div>
-                                </div>
-
-                                <div class="tfooter--right">
-                                    <div class="pagering">
-                                        <div class="page--left">
-                                            <div class="app-icon ic-angle-left"></div>
-                                        </div>
-                                        <div class="page--content">
-                                            <div style="font-size: 11px; font-weight: 700" class="item-page">
-                                                1
-                                            </div>
-                                            <div style="font-size: 11px" class="item-page">2</div>
-                                            <div style="font-size: 11px" class="item-page">..</div>
-                                            <div style="font-size: 11px" class="item-page">10</div>
-                                            <div style="font-size: 11px" class="item-page">11</div>
-                                        </div>
-                                        <div class="page--right">
-                                            <div class="app-icon ic-angle-right"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                            <th ref="th" v-for="col in columns" :key="col" :config="col">
+                                {{ col.title }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ms-tr v-for="(item, i) in allData" :key="item.EmployeeId" :data="item" :columns="columns"
+                            :selectedCol="selectedCol" v-model="selectedIndex[i]" @click="handleClick(i)"
+                            @dblclick="handleDoubleClick(item)">
+                            {{ item.EmployeeId }}
+                        </ms-tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="paging">
+                <div class="paging-left"> Tổng:
+                    <span>4</span>
+                </div>
+                <div class="paging-right">
+                    <div class="paging-page-limit">
+                        <span>Số bản ghi/ trang</span>
+                        <div class="total-page">
+                            <select>
+                                <option class="item-total" value="20" selected>20</option>
+                                <option class="item-total" value="50">50</option>
+                                <option class="item-total" value="100">100</option>
+                                <option class="item-total" value="200">200</option>
+                            </select>
+                            <div class="icon-bottom app-icon icon-combobox-pagging"></div>
+                        </div>
+                    </div>
+                    <div class="paging-page-range">
+                        Từ 1- 40 bản ghi
+                    </div>
+                    <div class="paging__page-button">
+                        <button class="btn--prev">
+                            <div class="icon-arrow-left"></div>
+                        </button>
+                        <button class="btn--next">
+                            <div class="icon-arrow-right"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- <ms-popup-asset v-if="isShowPopup" :formModel="pram" :dataPram="pramData"></ms-popup-asset> -->
     </div>
@@ -85,10 +74,11 @@ import {
 import MsTr from "./MsTr.vue";
 import Enum from "@/dictionary/enum.js";
 import MsCheckbox from "@/components/ms-control/ms-check-box/MsCheckBox.vue";
+import MsDropdown from "../dropdown/MsDropdown.vue";
 
 export default defineComponent({
     name: "MsGrid",
-    components: { MsTr, MsCheckbox },
+    components: { MsTr, MsCheckbox, MsDropdown },
     props: {
         selectedCol: {
             default: false,
@@ -201,9 +191,11 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 @import "@/style/components/MsGrid.scss";
+@import "@/style/common/icon.scss";
+
 
 .active-tr {
-    background-color: rgba(26, 164, 200, 0.2);
+    background-color: rgb(236, 238, 241);
 }
 </style>
   
