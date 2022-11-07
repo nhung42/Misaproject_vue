@@ -4,30 +4,32 @@
             {{ label ? label : "" }}
             <span v-if="hasInput">&#8727;</span>
         </label>
-        <button class="dropdown-menu-toggle" ref="dropdown" :class="disabledMessage ? 'error__message' : ''">
-            <input type="text" v-model="disp" :tabindex="tabindex" ref="input" :placeholder="placeholder"
-                :readonly="readonly" v-on="eventListsioner" @keyup="search" @click="isShowMenu = true" />
-            <div :class="[
-                'app-icon combobox__btn',
-                rightIcon,
-                disabled ? 'disabled-icon' : '',
-            ]" v-if="rightIcon" @click="isShowMenu = !isShowMenu"></div>
-        </button>
+        <div class="combobox">
+            <button class="dropdown-menu-toggle" ref="dropdown" :class="disabledMessage ? 'error__message' : ''">
+                <input type="text" v-model="disp" :tabindex="tabindex" ref="input" :placeholder="placeholder"
+                    v-on="eventListsioner" @keyup="search" @click="isShowMenu = true" />
+                <div :class="[
+                    'app-icon',
+                    rightIcon,
+                    disabled ? 'disabled-icon' : '',
+                ]" v-if="rightIcon" @click="isShowMenu = !isShowMenu"></div>
+            </button>
 
-        <teleport to="body">
-            <div class="dropdown-menu" ref="drop" :style="style" :class="autoHeight ? 'height_auto--cbo' : ''"
-                v-if="isShowMenu">
-                <div class="dropdown-content">
-                    <ul class="list-item--dropdown">
-                        <dropdown-item v-for="item in data" :key="item" :dataItem="item" :displayField="displayField"
-                            :class="[
-                                modelValue && modelValue == item[valueField] ? 'selected' : '',
-                            ]" @menu-item-click="itemClick">
-                        </dropdown-item>
-                    </ul>
+            <teleport to="body">
+                <div class="dropdown-menu" ref="drop" :style="style" :class="autoHeight ? 'height_auto--cbo' : ''"
+                    v-if="isShowMenu">
+                    <div class="dropdown-content">
+                        <ul class="list-item--dropdown">
+                            <dropdown-item v-for="item in data" :key="item" :dataItem="item"
+                                :displayField="displayField" :class="[
+                                    modelValue && modelValue == item[valueField] ? 'selected' : '',
+                                ]" @menu-item-click="itemClick">
+                            </dropdown-item>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </teleport>
+            </teleport>
+        </div>
         <span v-if="disabledMessage" class="error-message">{{
                 message ? message : ""
         }}</span>
@@ -40,8 +42,6 @@ import {
     ref,
     watch,
     computed,
-    resolveComponent as _resolveComponent,
-    mergeProps as _mergeProps,
     nextTick,
     reactive
 } from "vue";
@@ -52,6 +52,10 @@ export default {
         DropdownItem,
     },
     props: {
+        id: {
+            default: null,
+            type: String,
+        },
         modelValue: {
             default: null,
         },
@@ -150,6 +154,7 @@ export default {
 
         //Tìm kiếm dữ liệu trong dropdown
         const search = function (e) {
+            console.log(e);
             setTimeout(() => {
                 let val = proxy.$refs.input.value;
                 proxy.data = proxy.dataAll.filter((x) =>
@@ -181,7 +186,7 @@ export default {
 
         /**
          * Xet style cho dropdown
-         * Author: NNNinh (14/10/2022)
+         * Author: DuongNhung
          */
         const style = computed(() => {
             let arr = [];
@@ -218,7 +223,7 @@ export default {
 
         watch(
             () => proxy.modelValue,
-            (newVal) => {
+            () => {
                 disp.value = display.value;
             }
         );
@@ -272,28 +277,33 @@ export default {
 
         // const onBlur = (e) => {};
         const eventListsioner = computed(() => {
-            const me = this;
             return {
                 click: (e) => {
+                    console.log(e);
                     // proxy.cancelEvent(e);
                     proxy.isShowMenu = !proxy.isShowMenu;
                 },
                 blur: (e) => {
+                    console.log(e);
                     // proxy.cancelEvent(e);
                     // proxy.onBlur(e);
                 },
                 focus: (e) => {
+                    console.log(e);
                     // proxy.cancelEvent(e);
                     // proxy.onFocus(e);
                 },
                 change: (e) => {
+                    console.log(e);
                     // proxy.cancelEvent(e);
                     // proxy.changeValue(e);
                 },
                 keydown: (e) => {
+                    console.log(e);
                     emit("keydown", e);
                 },
                 keyup: (e) => {
+                    console.log(e);
                     emit("keyup", e);
                 },
             };

@@ -27,6 +27,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 //reset style
 * {
   padding: 0;
@@ -44,6 +46,7 @@ export default {
     width: calc(100% - 200px);
     height: calc(100vh - 56px);
     display: flex;
+    font-family: Roboto;
 
     &-router-view {
       width: 100%;

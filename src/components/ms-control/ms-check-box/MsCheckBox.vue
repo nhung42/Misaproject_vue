@@ -37,7 +37,6 @@ export default {
         },
     },
     setup(props) {
-        console.log(props);
         const { proxy } = getCurrentInstance();
 
         const isValue = ref(false);

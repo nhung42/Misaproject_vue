@@ -24,6 +24,11 @@
         margin-top: -5px;
       }
     }
+    .vuejs3-datepicker__value:hover,
+    .vuejs3-datepicker__value:focus,
+    .vuejs3-datepicker__value:active {
+      border: 1px solid #50b83c;
+    }
   }
 }
 .datepicker--error .el-input__wrapper {

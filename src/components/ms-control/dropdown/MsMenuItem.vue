@@ -32,10 +32,13 @@ export default {
   },
   methods: {
     emitClick(e) {
+      console.log(e);
+
       this.$emit("menu-item-click", this.dataItem);
     },
   },
   setup(props, { emit }) {
+    console.log(props, emit);
     // const { proxy } = getCurrentInstance();
 
     return {};

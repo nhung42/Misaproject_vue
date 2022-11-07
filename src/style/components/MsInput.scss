@@ -4,13 +4,13 @@
   width: 100%;
   position: relative;
   .error-message {
-    color: red;
-    position: absolute;
-    font-size: 13px;
-    bottom: -19px;
-    // position: relative;
-    max-width: 100%;
+    display: flex;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
+    color: red;
+    font-size: 0.7rem;
     // white-space: no;
   }
   .text-label {

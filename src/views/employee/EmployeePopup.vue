@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/html-indent -->
 <template>
     <teleport to="body">
         <div class="model">
@@ -31,41 +32,46 @@
                         <div class="employee__left">
                             <div class="m-row display-flex">
                                 <div class="input-wrapper width-40">
-                                    <v-input label="Mã" tabindex="1" hasLabel hasInput :maxLength="15"
-                                        ref="inputEmployeeCode" v-model="dataForm.employeeCode" :radius="false"
-                                        placeholder="Mã nhân viên" @blur="changeValueInput" @focus="changeValueInput">
+                                    <v-input label="Mã" tabindex="1" hasLabel hasInput valueField="EmployeeCode"
+                                        ref="inputemployeeCode" v-model="dataForm.EmployeeCode" :radius="false"
+                                        placeholder="Mã nhân viên" @blur="onBlurInput" @focus="changeValueInput"
+                                        :disabledMessage="errorMessage.employeeCode"
+                                        :message="Resource.ErrorInput.EmployeeCode">
                                     </v-input>
                                 </div>
                                 <div class="input-wrapper margin-left-10px flex-1">
-                                    <v-input label="Họ và tên" tabindex="2" hasLabel hasInput :maxLength="15"
-                                        v-model="dataForm.employeeName" :radius="false" placeholder="Tên nhân viên"
-                                        @blur="onBlurInput" @focus="changeValueInput"></v-input>
+                                    <v-input label="Họ và tên" tabindex="2" hasLabel hasInput valueField="EmployeeName"
+                                        v-model="dataForm.EmployeeName" :radius="false" placeholder="Tên nhân viên"
+                                        @blur="onBlurInput" @focus="changeValueInput"
+                                        :disabledMessage="errorMessage.employeeName"
+                                        :message="Resource.ErrorInput.EmployeeName"></v-input>
                                 </div>
                             </div>
                             <div class="m-row ">
                                 <div class="input-wrapper">
-                                    <v-drop-down label="Đơn vị" tabindex="3" ref="cb" hasLabel hasInput :heightCb="47"
-                                        v-model="dataForm.departmentName" :valueField="DepartmentName"
+                                    <v-drop-down label="Đơn vị" tabindex="3" ref="cb" hasLabel hasInput :heightCb="40"
+                                        v-model="dataForm.DepartmentName" valueField="DepartmentName"
                                         rightIcon="combobox__btn" displayField="DepartmentName"
                                         :dataAll="DataDepartment.value" placeholder="Chọn đơn vị"
-                                        @item-click="clickDataDepartment">
+                                        @item-click="clickDataDepartment" :disabledMessage="errorMessage.departmentName"
+                                        :message="Resource.ErrorInput.DepartmentName">
                                     </v-drop-down>
                                     <span class="m-input-wrapper__error"></span>
                                 </div>
                             </div>
                             <div class="m-row">
                                 <div class="input-wrapper">
-                                    <v-input label="Chức danh" tabindex="4" hasLabel :maxLength="15"
-                                        v-model="dataForm.positionName" :radius="false" placeholder="Chức danh"
-                                        @blur="changeValueInput" @focus="changeValueInput"></v-input>
+                                    <v-input label="Chức danh" tabindex="4" hasLabel valueField="PositionName"
+                                        v-model="dataForm.PositionName" :radius="false" placeholder="Chức danh"
+                                        @blur="onBlurInput" @focus="changeValueInput"></v-input>
                                 </div>
                             </div>
                         </div>
                         <div class="employee__right">
                             <div class="m-row display-flex">
                                 <div class="input-wrapper width-40">
-                                    <v-input-date label="Ngày sinh" hasLabel tabindex="5"
-                                        v-model="dataForm.dateOfBirth">
+                                    <v-input-date label="Ngày sinh" hasLabel tabindex="5" valueField="DateOfBirth"
+                                        v-model="dataForm.DateOfBirth">
                                     </v-input-date>
                                 </div>
                                 <div class="input-wrapper flex-1 margin-left-10px">
@@ -82,64 +88,64 @@
                             </div>
                             <div class="m-row display-flex">
                                 <div class="input-wrapper">
-                                    <v-input label="Số CMND" tabindex="9" hasLabel :maxLength="15"
-                                        v-model="dataForm.identityNumber" :radius="false" placeholder="CMND"
-                                        @blur="changeValueInput" @focus="changeValueInput"></v-input>
+                                    <v-input label="Số CMND" tabindex="9" hasLabel valueField="IdentityNumber"
+                                        v-model="dataForm.IdentityNumber" :radius="false" placeholder="CMND"
+                                        @blur="onBlurInput" @focus="changeValueInput"></v-input>
                                 </div>
                                 <div class="input-wrapper margin-left-10px">
-                                    <v-input-date label="Ngày cấp" hasLabel tabindex="10"
-                                        v-model="dataForm.identityDate">
+                                    <v-input-date label="Ngày cấp" hasLabel tabindex="10" valueField="IdentityDate"
+                                        v-model="dataForm.IdentityDate">
                                     </v-input-date>
                                 </div>
                             </div>
                             <div class="m-row">
                                 <div class="input-wrapper">
-                                    <v-input label="Nơi cấp" tabindex="11" hasLabel :maxLength="15"
-                                        v-model="dataForm.identityPlace" :radius="false" placeholder="Nơi cấp"
-                                        @blur="changeValueInput" @focus="changeValueInput"></v-input>
+                                    <v-input label="Nơi cấp" tabindex="11" hasLabel valueField="IdentityPlace"
+                                        v-model="dataForm.IdentityPlace" :radius="false" placeholder="Nơi cấp"
+                                        @blur="onBlurInput" @focus="changeValueInput"></v-input>
                                 </div>
                             </div>
                         </div>
                         <div class="employee__bottom">
                             <div class="m-row width-100">
                                 <div class="input-wrapper">
-                                    <v-input label="Địa chỉ" tabindex="12" hasLabel :maxLength="15"
-                                        v-model="dataForm.address" :radius="false" placeholder=""
-                                        @blur="changeValueInput" @focus="changeValueInput"></v-input>
-                                </div>
-                            </div>
-                            <div class="m-row display-flex">
-                                <div class="input-wrapper">
-                                    <v-input label="ĐT di động" tabindex="13" hasLabel :maxLength="15"
-                                        v-model="dataForm.phoneNumber" :radius="false" placeholder=""
-                                        @blur="changeValueInput" @focus="changeValueInput"></v-input>
-                                </div>
-                                <div class="input-wrapper margin-left-10px">
-                                    <v-input label="ĐT cố định" tabindex="14" hasLabel :maxLength="15"
-                                        v-model="dataForm.phone" :radius="false" placeholder="" @blur="changeValueInput"
-                                        @focus="changeValueInput"></v-input>
-                                </div>
-                                <div class="input-wrapper margin-left-10px">
-                                    <v-input label="Email" tabindex="15" hasLabel :maxLength="15"
-                                        v-model="dataForm.email" :radius="false" placeholder="" @blur="changeValueInput"
+                                    <v-input label="Địa chỉ" tabindex="12" hasLabel valueField="Address"
+                                        v-model="dataForm.Address" :radius="false" placeholder="" @blur="onBlurInput"
                                         @focus="changeValueInput"></v-input>
                                 </div>
                             </div>
                             <div class="m-row display-flex">
                                 <div class="input-wrapper">
-                                    <v-input label="Tài khoản ngân hàng" tabindex="16" hasLabel :maxLength="15"
-                                        v-model="dataForm.bankAccount" :radius="false" placeholder=""
-                                        @blur="changeValueInput" @focus="changeValueInput"></v-input>
+                                    <v-input label="ĐT di động" tabindex="13" hasLabel valueField="PhoneNumber"
+                                        v-model="dataForm.PhoneNumber" :radius="false" placeholder=""
+                                        @blur="onBlurInput" @focus="changeValueInput"></v-input>
                                 </div>
                                 <div class="input-wrapper margin-left-10px">
-                                    <v-input label="Tên ngân hàng" tabindex="17" hasLabel :maxLength="15"
-                                        v-model="dataForm.bankName" :radius="false" placeholder=""
-                                        @blur="changeValueInput" @focus="changeValueInput"></v-input>
+                                    <v-input label="ĐT cố định" tabindex="14" hasLabel valueField="Phone"
+                                        v-model="dataForm.Phone" :radius="false" placeholder="" @blur="onBlurInput"
+                                        @focus="onBlurInput"></v-input>
                                 </div>
                                 <div class="input-wrapper margin-left-10px">
-                                    <v-input label="Chi nhánh" tabindex="18" hasLabel :maxLength="15"
-                                        v-model="dataForm.bankBranchName" :radius="false" placeholder=""
-                                        @blur="changeValueInput" @focus="changeValueInput"></v-input>
+                                    <v-input label="Email" tabindex="15" hasLabel valueField="Email"
+                                        v-model="dataForm.Email" :radius="false" placeholder="" @blur="onBlurInput"
+                                        @focus="changeValueInput"></v-input>
+                                </div>
+                            </div>
+                            <div class="m-row display-flex">
+                                <div class="input-wrapper">
+                                    <v-input label="Tài khoản ngân hàng" tabindex="16" hasLabel valueField="BankAccount"
+                                        v-model="dataForm.BankAccount" :radius="false" placeholder=""
+                                        @blur="onBlurInput" @focus="changeValueInput"></v-input>
+                                </div>
+                                <div class="input-wrapper margin-left-10px">
+                                    <v-input label="Tên ngân hàng" tabindex="17" hasLabel valueField="BankName"
+                                        v-model="dataForm.BankName" :radius="false" placeholder="" @blur="onBlurInput"
+                                        @focus="changeValueInput"></v-input>
+                                </div>
+                                <div class="input-wrapper margin-left-10px">
+                                    <v-input label="Chi nhánh" tabindex="18" hasLabel valueField="BankBranchName"
+                                        v-model="dataForm.BankBranchName" :radius="false" placeholder=""
+                                        @blur="onBlurInput" @focus="changeValueInput"></v-input>
                                 </div>
                             </div>
                         </div>
@@ -204,18 +210,12 @@ import {
     ref,
     watch,
     computed,
-    resolveComponent as _resolveComponent,
-    mergeProps as _mergeProps,
-    onUpdated,
-    nextTick,
 } from "vue";
 import {
-    ssrRenderComponent as _ssrRenderComponent,
-    ssrRenderAttrs as _ssrRenderAttrs,
 } from "vue/server-renderer";
 import VButton from "@/components/ms-control/ms-button/MsButton.vue";
 import VInput from "@/components/ms-control/ms-text-box/MsTextBox.vue";
-import useValidate from "@vuelidate/core";
+import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import VInputDate from "@/components/ms-control/ms-date-box/MsDateBox.vue";
 import VDropDown from "@/components/ms-control/dropdown/MsDropdown.vue";
@@ -263,7 +263,6 @@ export default {
         //Show toastMessage
         window.popup = proxy;
         const isShowMessage = ref(false);
-
         const isShowPopup = ref(false);
         const isDialogMessCancelAdd = ref(false);
 
@@ -277,40 +276,39 @@ export default {
         const isSubmited = ref(false);
         const dataForm = ref({
             Mode: 0,
-            employeeId: "",
-            employeeCode: "",
-            employeeName: "",
-            dateOfBirth: "",
-            positionId: "",
-            positionCode: "",
-            positionName: "",
-            departmentId: "",
-            departmentCode: "",
-            departmentName: "",
-            identityNumber: "",
-            identityDate: "",
-            identityPlace: "",
-            gender: 1,
-            address: "",
-            phoneNumber: "",
+            EmployeeCode: "",
+            EmployeeName: "",
+            DateOfBirth: "",
+            PositionCode: "",
+            PositionName: "",
+            DepartmentId: "",
+            DepartmentCode: "",
+            DepartmentName: "",
+            IdentityNumber: "",
+            IdentityDate: "",
+            IdentityPlace: "",
+            Gender: 1,
+            GenderName: "",
+            Address: "",
+            PhoneNumber: "",
             phone: "",
-            email: "",
-            bankAccount: "",
-            bankName: "",
-            bankBranchName: "",
-            modified_by: "",
-            modified_date: "",
+            Email: "",
+            BankAccount: "",
+            BankName: "",
+            BankBranchName: "",
+            Modified_by: "",
+            Modified_date: "",
         });
 
         // Validate form
         const dataFormValidate = computed(() => {
             return {
-                employeeCode: { required },
-                employeeName: { required },
-                departmentId: { required },
+                EmployeeCode: { required },
+                EmployeeName: { required },
+                DepartmentId: { required },
             };
         });
-        const v$ = useValidate(dataFormValidate, dataForm);
+        const v$ = useVuelidate(dataFormValidate, dataForm);
         const DataDepartment = ref([]);
 
         const title = ref("");
@@ -332,7 +330,19 @@ export default {
                 console.log(error);
             }
         }
+        async function addEmployee(obj) {
+            console.log("Them du lieu:");
+            console.log(obj);
+            axios
+                .post("https://amis.manhnv.net/api/v1/Employees", obj)
+                .then((res) => {
+                    console.log("post:", res.data);
+                })
+                .catch(function (error) {
+                    console.log("error:", error.response.data);
 
+                });
+        }
         //Sự kiện close error message Multiple
         const handleCloseErrorMultiple = () => {
             proxy.isShowDialogDetail = false;
@@ -341,17 +351,14 @@ export default {
         };
         watch(
             () => dataForm.value,
-            (newVal, old) => { },
         );
         onMounted(() => {
             proxy.focusInput();
         });
 
         const focusInput = () => {
-            proxy.$refs.inputEmployeeCode.$el.getElementsByTagName("input")[0].focus();
+            proxy.$refs.inputemployeeCode.$el.getElementsByTagName("input")[0].focus();
         };
-
-
         onMounted(() => {
             try {
                 /**
@@ -370,7 +377,6 @@ export default {
                     //Kiểm tra giá trị mode là thêm
                     case Enum.Mode.Add:
                         proxy.title = Resource.TitleFormPopup.FormAddEmployee.VI;
-                        // proxy.getAssetNextCode();
                         proxy.dataForm.Mode = 1;
                         break;
 
@@ -404,29 +410,42 @@ export default {
             return arr.join("; ");
         });
         /**
-         * Xử lý sự kiện click mã bộ phận câp nhật lại tên bộ phận cho input
+         * Xử lý sự kiện click nhận tên đơn vị cho for
          *  @author DuongNhung
          */
         const clickDataDepartment = (item) => {
-            proxy.dataForm.departmentName = item.departmentName;
+            proxy.dataForm.DepartmentId = item.DepartmentId;
+            proxy.dataForm.DepartmentCode = item.DepartmentCode;
+            proxy.dataForm.DepartmentName = item.DepartmentName;
         };
-        const onBlurInput = (isValue, valueField, e) => {
+        const onBlurInput = (isValue, valueField) => {
             switch (valueField) {
-                case "employeeName": {
+
+                case "EmployeeName": {
                     if (isValue != "") {
                         proxy.errorMessage.employeeName = false;
-                        proxy.dataForm.department_name = isValue;
+                        proxy.dataForm.EmployeeName = isValue;
                     } else {
                         proxy.errorMessage.employeeName = true;
                     }
                     break;
                 }
-                case "employeeCode": {
+                case "EmployeeCode": {
                     if (isValue != "") {
                         proxy.errorMessage.employeeCode = false;
-                        proxy.dataForm.employeeCode = isValue;
+                        proxy.dataForm.EmployeeCode = isValue;
                     } else {
                         proxy.errorMessage.employeeCode = true;
+                    }
+
+                    break;
+                }
+                case "DepartmentName": {
+                    if (isValue != "") {
+                        proxy.errorMessage.departmentName = false;
+                        proxy.dataForm.DepartmentName = isValue;
+                    } else {
+                        proxy.errorMessage.departmentName = true;
                     }
 
                     break;
@@ -445,56 +464,64 @@ export default {
          */
         const changeValueInput = (isValue, valueField) => {
             switch (valueField) {
-                case "departmentName": {
-                    proxy.dataForm.departmentName = isValue;
+                case "EmployeeCode": {
+                    proxy.dataForm.EmployeeCode = isValue;
                     break;
                 }
-                case "dateOfBirth": {
-                    proxy.dataForm.dateOfBirth = isValue;
+                case "EmployeeName": {
+                    proxy.dataForm.EmployeeName = isValue;
                     break;
                 }
-                case "positionName": {
-                    proxy.dataForm.positionName = isValue;
+                case "DepartmentName": {
+                    proxy.dataForm.DepartmentName = isValue;
                     break;
                 }
-                case "identityNumber": {
-                    proxy.dataForm.identityNumber = isValue;
+                case "DateOfBirth": {
+                    proxy.dataForm.DateOfBirth = isValue;
                     break;
                 }
-                case "identityDate": {
-                    proxy.dataForm.identityDate = isValue;
+                case "PositionName": {
+                    proxy.dataForm.PositionName = isValue;
                     break;
                 }
-                case "identityPlace": {
-                    proxy.dataForm.identityPlace = isValue;
+                case "IdentityNumber": {
+                    proxy.dataForm.IdentityNumber = isValue;
                     break;
                 }
-                case "address": {
-                    proxy.dataForm.address = isValue;
+                case "IdentityDate": {
+                    proxy.dataForm.IdentityDate = isValue;
                     break;
                 }
-                case "phoneNumber": {
-                    proxy.dataForm.phoneNumber = isValue;
+                case "IdentityPlace": {
+                    proxy.dataForm.IdentityPlace = isValue;
                     break;
                 }
-                case "phone": {
-                    proxy.dataForm.phone = isValue;
+                case "Address": {
+                    proxy.dataForm.Address = isValue;
                     break;
                 }
-                case "email": {
-                    proxy.dataForm.email = isValue;
+                case "PhoneNumber": {
+                    proxy.dataForm.PhoneNumber = isValue;
                     break;
                 }
-                case "bankAccount": {
-                    proxy.dataForm.bankAccount = isValue;
+                case "Phone": {
+                    proxy.dataForm.Phone = isValue;
                     break;
                 }
-                case "bankName": {
-                    proxy.dataForm.bankName = isValue;
+                case "Email": {
+                    proxy.dataForm.Email = isValue;
                     break;
                 }
-                case "bankBranchName": {
-                    proxy.dataForm.bankBranchName = isValue;
+                case "BankAccount": {
+                    proxy.dataForm.BankAccount = isValue;
+                    break;
+                }
+                case "BankName": {
+                    proxy.dataForm.BankName = isValue;
+                    break;
+                }
+                case "BankBranchName": {
+                    proxy.dataForm.BankBranchName = isValue;
                     break;
                 }
                 default: {
@@ -508,29 +535,21 @@ export default {
             if (proxy.v$.$error) {
                 proxy.titleErrValidate = [];
                 proxy.errorMessage = {};
-                if (proxy.dataForm.employeeCode == "") {
-                    proxy.titleErrValidate.push(Resource.ErrorValidate.employeeCode.VI);
+                if (proxy.dataForm.EmployeeCode == "") {
+                    proxy.titleErrValidate.push(Resource.ErrorValidate.employeeCode);
                     proxy.errorMessage.employeeCode = true;
                 }
-                if (proxy.dataForm.employeeName == "") {
-                    proxy.titleErrValidate.push(Resource.ErrorValidate.employeeName.VI);
+                if (proxy.dataForm.EmployeeName == "") {
+                    proxy.titleErrValidate.push(Resource.ErrorValidate.employeeName);
                     proxy.errorMessage.employeeName = true;
                 }
 
-                if (proxy.dataForm.departmentName == "") {
-                    proxy.titleErrValidate.push(Resource.ErrorValidate.departmentName.VI);
+                if (proxy.dataForm.DepartmentName == "") {
+                    proxy.titleErrValidate.push(Resource.ErrorValidate.departmentName);
                     proxy.errorMessage.departmentName = true;
                 }
             }
-            // else 
-            // if (proxy.dataForm.depreciation_year > proxy.dataForm.cost) {
-            //     proxy.titleErrValidate = [];
-            //     proxy.errorMessage = {};
-            //     proxy.titleErrValidate.push(
-            //         "Hao mòn năm phải nhỏ hơn hoặc bằng nguyên giá"
-            //     );
         };
-
         const saveData = () => {
             try {
                 if (proxy.validateData() == false) {
@@ -540,12 +559,12 @@ export default {
                         //Kiểm tra giá trị mode là cập nhật
                         case Enum.Mode.Update: {
                             proxy.isDialogMessUpdate = true;
-
                             break;
                         }
                         //Kiểm tra giá trị mode là thêm hay nhân bản
-                        case (Enum.Mode.Add, Enum.Mode.Duplicate): {
+                        case (Enum.Mode.Add): {
                             proxy.isShowMessage = true;
+                            proxy.addEmployee(dataForm.value);
                             break;
                         }
 
@@ -578,14 +597,15 @@ export default {
             isDialogMessUpdate,
             Resource,
             ResourceTable,
-            dataForm,
             DataDepartment,
             isShowDialogDetail,
             loadDataDepartment,
             clickDataDepartment,
             focusInput,
+            dataForm,
             changeValueInput,
-            // getAssetNextCode,
+            addEmployee,
+            // updateData,
             saveData,
             handlePopupClose,
             errorMessage,
@@ -596,15 +616,15 @@ export default {
             isSubmited,
             v$,
         };
-    },
-    data() {
-        return {
-            isShowPopup: false,
-        };
-    },
+    }
 };
 </script>
 <style lang="scss" scoped>
+input[type="radio"] {
+    accent-color: #409330 !important;
+    background-color: #fff;
+}
+
 @import "@/style/layout/EmployeePopup.scss";
 @import "@/style/components/MsInputDate.scss";
 </style>

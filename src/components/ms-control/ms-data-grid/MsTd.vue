@@ -7,16 +7,19 @@
 
       <template v-else-if="config.type == ColumnType.Action">
         <div class="edit-option">
-          <div class="text-edit">Sửa</div>
-          <button class="icon arrow-up--blueicon hw-16">
+          <div class="text-edit" @click="handleClickUpdate">Sửa</div>
+          <button class="icon-combobox-function" @click="handleClickOption">
           </button>
+          <ms-popup-employee v-if="isShowPopup" :formModel="pram" @closePopup="handlClosePopup"></ms-popup-employee>
         </div>
-        <div v-show="isShowOption && itemSelected.EmployeeId == employee.EmployeeId" class="dlg-option"
-          v-if="this.isShowOption == true" v-click-away="closeOption">
+        <div v-show="isShowOption" class="dlg-option" v-if="this.isShowOption == true" @click="closeOption">
           <div @click="deleteEmployee" class="option option-delete">Xoá</div>
         </div>
       </template>
 
+      <template v-else-if="config.type == ColumnType.Date">
+        {{ formatDate(text) }}
+      </template>
       <template v-else-if="config.align == ColumnType.AlignCenter">
         {{ text }}
       </template>
@@ -27,6 +30,7 @@
   
 <script>
 import MsCheckbox from "@/components/ms-control/ms-check-box/MsCheckBox.vue";
+import Enum from "@/dictionary/enum.js";
 import {
   computed, getCurrentInstance,
   onMounted,
@@ -37,6 +41,7 @@ import {
 
 const ColumnType = {
   Text: 'Text',
+  Date: 'Date',
   Number: 'Number',
   Checkbox: 'Checkbox',
   AlignCenter: 'AlignCenter',
@@ -49,6 +54,7 @@ export default {
   name: "MsTd",
   components: {
     MsCheckbox,
+    Enum
   },
   props: {
     config: {
@@ -58,11 +64,25 @@ export default {
       default: null,
     },
   },
-  methods: {},
+  methods: {
+    formatDate(dob) {
+      if (dob) {
+        let date = new Date(dob);
+        let day = date.getDate();
+        day = day > 10 ? day : `0${day}`;
+        let month = date.getMonth() + 1;
+        month = month > 10 ? month : `0${month}`;
+        let year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+    }
+  },
   setup(props) {
     const { proxy } = getCurrentInstance();
     window.tr = proxy;
     const data = ref(props.value);
+    const isShowOption = ref(false);
+    const isShowPopup = ref(false);
 
     onMounted(() => {
       watch(
@@ -86,6 +106,29 @@ export default {
         return proxy.text;
       } else return "";
     };
+
+    const handleClickOption = () => {
+      proxy.isShowOption = true;
+    }
+    const handleClickUpdate = () => {
+      proxy.pram.mode = Enum.Mode.Update;
+      proxy.isShowPopup = true;
+    }
+    /*
+    Format Date*/
+    // const formatDate = (dob) => {
+    //   if (dob) {
+    //     debugger
+    //     let date = new Date(dob);
+    //     let day = date.getDay();
+    //     let month = date.getMonth() + 1;
+    //     let year = date.getFullYear();
+    //     return `${day}/${month}/${year}`;
+    //   }
+    // }
+    const closeOption = () => {
+      proxy.isShowOption = false;
+    }
     const styles = computed(() => {
       let arr = [];
       if (props.config.width) {
@@ -156,6 +199,15 @@ export default {
       data,
       setTooltipDisplay,
       styleAlign,
+      handleClickOption,
+      handleClickUpdate,
+      closeOption
+    };
+  },
+  data() {
+    return {
+      isShowOption: false,
+      isShowPopup: false,
     };
   },
 };
@@ -173,6 +225,17 @@ export default {
   justify-content: center;
   align-items: center;
 
+  button {
+    border: unset;
+    background-color: #fff;
+    cursor: pointer;
+  }
+
+  button:hover,
+  button:focus {
+    background-color: #eceef1;
+  }
+
 }
 
 .text-edit {
@@ -183,6 +246,9 @@ export default {
 }
 
 .dlg-option {
+  width: 40px;
+  text-align: center;
+  border-radius: 2px;
   z-index: 5;
   background-color: #fff;
   position: absolute;
@@ -238,8 +304,52 @@ input[type="checkbox"] {
   }
 }
 
+/* Fixed table */
+table tbody td:first-child {
+  position: sticky;
+  left: 0px;
+  z-index: 1;
+  background-color: #fff;
+  width: 50px;
+  padding-left: 3px;
+}
+
+table tbody td:nth-child(2) {
+  position: sticky;
+  left: 50px;
+  z-index: 1;
+  background-color: #fff;
+  text-align: left;
+  padding: 0px !important;
+}
+
+table tbody td:nth-child(3) {
+  position: sticky;
+  left: 170px;
+  z-index: 1;
+  background-color: #fff;
+  text-align: left;
+  padding: 0px !important;
+}
+
+table td:nth-child(4) {
+  width: 40px;
+}
+
+table tbody td:last-child {
+  position: sticky;
+  right: 0px;
+  z-index: 1;
+  background-color: #fff;
+}
+
+
 .text-align__center {
   text-align: center;
+}
+
+.option-delete {
+  z-index: 5;
 }
 </style>
   

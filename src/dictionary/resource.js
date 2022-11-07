@@ -1,29 +1,13 @@
 export default {
   ErrorValidate: {
-    employeeName: {
-      VI: "Họ tên không được để trống",
-    },
-    employeeCode: {
-      VI: "Mã nhân viên không được để trống.",
-    },
-    DepartmentCode: {
-      VI: "Đơn vị không được để trống.",
-      EN: "",
-    },
+    employeeName: "Họ và tên không được để trống",
+    employeeCode: "Mã nhân viên không được để trống",
+    departmentName: "Đơn vị không được để trống",
   },
   ErrorInput: {
-    EmployeeName: {
-      VI: "Tên nhân viên không được để trống!",
-      EN: "",
-    },
-    EmployeeCode: {
-      VI: "Mã nhân viên không được để trống!",
-      EN: "",
-    },
-    DepartmentCode: {
-      VI: "Đơn vị không được để trống!",
-      EN: "",
-    },
+    EmployeeName: "Tên nhân viên không được để trống!",
+    EmployeeCode: "Mã nhân viên không được để trống!",
+    DepartmentName: "Đơn vị không được để trống!",
   },
   TitleBtnDialog: {
     Cancel: {

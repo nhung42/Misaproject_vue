@@ -15,7 +15,7 @@
             <ms-input :hasLabel="false" leftIcon="ic-search" id="txt-search" :radius="true" placeholder="Tìm kiếm "
                 :disabledMessage="false" message="" class="input_search"></ms-input>
             <ms-tooltip content="Lấy lại dữ liệu" placement="bottom" right="bottom">
-                <div class="icon-reload margin-left-10px"></div>
+                <div class="icon-reload margin-left-10px" @click="loadData"></div>
             </ms-tooltip>
         </div>
 
@@ -32,7 +32,6 @@ import MsInput from "@/components/ms-control/ms-text-box/MsTextBox.vue";
 import MsTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
 import Enum from "@/dictionary/enum.js";
 import MsPopupEmployee from "@/views/employee/EmployeePopup.vue";
-import MsLoading from "@/components/ms-control/loading/MsLoading.vue";
 import axios from 'axios';
 import {
     getCurrentInstance,
@@ -49,7 +48,6 @@ export default {
         MsGrid,
         MsTooltip,
         MsPopupEmployee,
-        MsLoading
     },
     methods: {
         close() {
@@ -103,7 +101,7 @@ export default {
          * Xử lí sự kiện đóng popup
          * @author DuongNhung
          */
-        const handlClosePopup = (isShowPopup) => {
+        const handlClosePopup = () => {
             proxy.isShowPopup = false;
         };
         const clickMenu = async (action, val) => {
@@ -114,33 +112,26 @@ export default {
                     proxy.isShowPopup = true;
                     break;
                 }
-                case 1: {
-                    proxy.pram.mode = Enum.Mode.Duplicate;
-                    proxy.pram.employeeId = val;
-                    proxy.isShowPopup = true;
-                    break;
-                }
             }
         };
-
         const columns = ref([
             {
                 field: "EmployeeCode",
                 title: "Mã nhân viên",
                 type: "Text",
-                width: 100,
+                width: 110,
             },
             {
                 field: "EmployeeName",
                 title: "Họ và tên",
                 type: "Text",
-                minWidth: 140,
+                width: 180,
             },
             {
                 field: "GenderName",
                 title: "Giới tính",
                 type: "Text",
-                width: 60,
+                width: 40,
             },
             {
                 field: "DateOfBirth",
@@ -192,7 +183,6 @@ export default {
             },
         ]);
 
-        // const isShowPopup = false; // ref(false);
 
         return {
             columns,
@@ -202,7 +192,6 @@ export default {
             Loading,
             clickMenu,
             handlClosePopup,
-            // isShowPopup,
             pram,
             loadData,
             handleClickAdd,
@@ -218,6 +207,13 @@ export default {
 </script>
 
 <style lang="scss" >
+.ic-search {
+    background-image: url(/src/assets/img/icon_search.png);
+    width: 6px;
+    height: 16px;
+    margin-top: -8px !important;
+}
+
 @import "@/style/layout/Employee.scss";
 @import "@/style/components/MsMessageBox.scss";
 </style>
