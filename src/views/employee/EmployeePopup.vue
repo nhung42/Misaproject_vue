@@ -78,11 +78,14 @@
                                     <label class="m-input__label" for="">Giới tính</label>
                                     <div class="form__radio display-flex">
                                         <input class="radio" type="radio" id="rdMale" tabindex="6" name="gender"
-                                            value="nam" /><span class="radio__title">Nam</span>
+                                            value="nam" v-model="dataForm.GenderName" /><span
+                                            class="radio__title">Nam</span>
                                         <input class="radio" type="radio" id="rdFemale" name="gender" tabindex="7"
-                                            value="nu" /><span class="radio__title">Nữ</span>
+                                            value="nu" v-model="dataForm.GenderName" /><span
+                                            class="radio__title">Nữ</span>
                                         <input class="radio" type="radio" id="rdOther" name="gender" tabindex="8"
-                                            value="khac" /><span class="radio__title">Khác</span>
+                                            value="khac" v-model="dataForm.GenderName" /><span
+                                            class="radio__title">Khác</span>
                                     </div>
                                 </div>
                             </div>
@@ -173,34 +176,34 @@
     </teleport>
 
     <!-- Toast message thêm mới thành công -->
-    <v-message v-if="isShowMessage" textMessage="Thêm mới dữ liệu thành công" iconMessage="ic-success"></v-message>
+    <ms-message v-if="isShowMessage" textMessage="Thêm mới dữ liệu thành công" iconMessage="ic-success"></ms-message>
 
     <!-- Dialog messagebox hủy bỏ khai báo -->
     <teleport to="body">
-        <v-message-box leftIcon="ic-warning" :textMessageBox="Resource.TitleDialogMessage.AddAsset.VI"
+        <ms-message-box leftIcon="ic-warning" :textMessageBox="Resource.TitleDialogMessage.AddAsset.VI"
             :disabledValueLeft="false" :disabledValueRight="false" v-if="isDialogMessCancelAdd">
             <v-button :text="Resource.TitleBtnDialog.Cancel.VI" radius></v-button>
             <v-button :text="Resource.TitleBtnDialog.NoCancel.VI" type="secodary" @click="isDialogMessCancelAdd = false"
                 radius></v-button>
-        </v-message-box>
+        </ms-message-box>
     </teleport>
 
     <!-- Dialog messagebox cập nhật -->
     <teleport to="body">
-        <v-message-box leftIcon="ic-warning" :textMessageBox="Resource.TitleDialogMessage.SaveUpdate.VI"
+        <ms-message-box leftIcon="ic-warning" :textMessageBox="Resource.TitleDialogMessage.SaveUpdate.VI"
             :disabledValueLeft="false" :disabledValueRight="false" v-if="isDialogMessUpdate">
             <v-button :text="Resource.TitleBtnDialog.Save.VI" radius></v-button>
             <v-button :text="Resource.TitleBtnDialog.NoSave.VI" type="abort" radius></v-button>
             <v-button :text="Resource.TitleBtnDialog.Cancel.VI" type="secodary" radius></v-button>
-        </v-message-box>
+        </ms-message-box>
     </teleport>
 
     <teleport to="body">
-        <v-message-box :disabledTop="true" title="Thông báo" icClose="ic-close" disabled disabledLeftMultiple
+        <ms-message-box :disabledTop="true" title="Thông báo" icClose="ic-close" disabled disabledLeftMultiple
             :valueMultiple="titleErrValidate" :disabledMultiple="true" :disabledValueLeft="false"
             :disabledValueRight="false" v-if="isShowDialogDetail">
             <v-button :text="Resource.TitleBtnDialog.Close.VI" radius @click="handleCloseErrorMultiple"></v-button>
-        </v-message-box>
+        </ms-message-box>
     </teleport>
 </template>
 <script>
@@ -220,7 +223,7 @@ import { required } from "@vuelidate/validators";
 import VInputDate from "@/components/ms-control/ms-date-box/MsDateBox.vue";
 import VDropDown from "@/components/ms-control/dropdown/MsDropdown.vue";
 import VTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
-import VMessageBox from "@/components/dialog/MsMessageBox.vue";
+import MsMessageBox from "@/components/dialog/MsMessageBox.vue";
 import Resource from "@/dictionary/resource";
 import ResourceTable from "@/dictionary/resourceTable";
 import Enum from "@/dictionary/enum.js";
@@ -234,7 +237,7 @@ export default {
         VDropDown,
         VInputDate,
         VTooltip,
-        VMessageBox,
+        MsMessageBox,
     },
     props: {
         configStyle: {
@@ -561,13 +564,14 @@ export default {
                             proxy.isDialogMessUpdate = true;
                             break;
                         }
-                        //Kiểm tra giá trị mode là thêm hay nhân bản
+                        //Kiểm tra giá trị mode 
                         case (Enum.Mode.Add): {
+                            // eslint-disable-next-line no-debugger
+                            debugger
                             proxy.isShowMessage = true;
                             proxy.addEmployee(dataForm.value);
                             break;
                         }
-
                         default:
                             break;
                     }

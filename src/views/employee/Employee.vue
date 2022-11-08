@@ -209,7 +209,7 @@ export default {
 <style lang="scss" >
 .ic-search {
     background-image: url(/src/assets/img/icon_search.png);
-    width: 6px;
+    width: 5px;
     height: 16px;
     margin-top: -8px !important;
 }

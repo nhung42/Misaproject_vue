@@ -258,9 +258,5 @@ export default defineComponent({
 .pagingOption .option {
     top: -170px;
 }
-
-.active-tr {
-    background-color: rgb(236, 238, 241);
-}
 </style>
   
