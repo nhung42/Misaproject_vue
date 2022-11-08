@@ -179,5 +179,6 @@ export default {
 <style lang="scss" scoped>
 @import "@/style/common/color.scss";
 @import "@/style/common/TheLeftMenu.scss";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 </style>
   

@@ -1,44 +1,41 @@
 <template>
   <td :style="styles" :class="[cls, styleAlign]">
     <div class="td-inner" ref="td">
-      <template v-if="config.type == ColumnType.Checkbox">
+      <div v-if="config.type == ColumnType.Checkbox">
         <ms-checkbox v-model="data"></ms-checkbox>
-      </template>
+      </div>
 
-      <template v-else-if="config.type == ColumnType.Action">
+      <div v-else-if="config.type == ColumnType.Action">
         <div class="edit-option">
-          <div class="text-edit" @click="handleClickUpdate">Sửa</div>
+          <div class="text-edit" @click="handleClickUpdate($event, emp)">Sửa</div>
           <button class="icon-combobox-function" @click="handleClickOption">
           </button>
-          <ms-popup-employee v-if="isShowPopup" :formModel="pram" @closePopup="handlClosePopup"></ms-popup-employee>
         </div>
         <div v-show="isShowOption" class="dlg-option" v-if="this.isShowOption == true" @click="closeOption">
           <div @click="deleteEmployee" class="option option-delete">Xoá</div>
         </div>
-      </template>
+      </div>
 
-      <template v-else-if="config.type == ColumnType.Date">
+      <div v-else-if="config.type == ColumnType.Date">
         {{ formatDate(text) }}
-      </template>
-      <template v-else-if="config.align == ColumnType.AlignCenter">
+      </div>
+      <div v-else-if="config.align == ColumnType.AlignCenter">
         {{ text }}
-      </template>
-      <template v-else> {{ text }} </template>
+      </div>
+      <div v-else> {{ text }} </div>
     </div>
   </td>
 </template>
   
 <script>
 import MsCheckbox from "@/components/ms-control/ms-check-box/MsCheckBox.vue";
-import Enum from "@/dictionary/enum.js";
+// import Enum from "@/dictionary/enum.js";
 import {
   computed, getCurrentInstance,
   onMounted,
   ref,
   watch
 } from "vue";
-
-
 const ColumnType = {
   Text: 'Text',
   Date: 'Date',
@@ -54,15 +51,18 @@ export default {
   name: "MsTd",
   components: {
     MsCheckbox,
-    Enum
   },
   props: {
     config: {
-      default: {},
+      type: Object,
     },
     value: {
+      type: String,
       default: null,
     },
+    emp: {
+      type: Object
+    }
   },
   methods: {
     formatDate(dob) {
@@ -81,8 +81,6 @@ export default {
     const { proxy } = getCurrentInstance();
     window.tr = proxy;
     const data = ref(props.value);
-    const isShowOption = ref(false);
-    const isShowPopup = ref(false);
 
     onMounted(() => {
       watch(
@@ -110,22 +108,13 @@ export default {
     const handleClickOption = () => {
       proxy.isShowOption = true;
     }
-    const handleClickUpdate = () => {
-      proxy.pram.mode = Enum.Mode.Update;
-      proxy.isShowPopup = true;
-    }
-    /*
-    Format Date*/
-    // const formatDate = (dob) => {
-    //   if (dob) {
-    //     debugger
-    //     let date = new Date(dob);
-    //     let day = date.getDay();
-    //     let month = date.getMonth() + 1;
-    //     let year = date.getFullYear();
-    //     return `${day}/${month}/${year}`;
-    //   }
-    // }
+    const handleClickUpdate = (e, item) => {
+      // console.log("item:", item)
+      // proxy.pram.mode = Enum.Mode.Update;
+      // proxy.pramData = item;
+      // proxy.isShowPopup = true;
+      proxy.eventBus.emit("sendDataEmp", item)
+    };
     const closeOption = () => {
       proxy.isShowOption = false;
     }
@@ -207,7 +196,6 @@ export default {
   data() {
     return {
       isShowOption: false,
-      isShowPopup: false,
     };
   },
 };

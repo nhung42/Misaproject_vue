@@ -10,7 +10,6 @@
                                     <ms-checkbox v-model="allSelected"></ms-checkbox>
                                 </div>
                             </th>
-
                             <th ref="th" v-for="col in columns" :key="col" :config="col">
                                 {{ col.title }}
                             </th>
@@ -34,12 +33,13 @@
                     <div class="paging-page-limit">
                         <span>Số bản ghi/ trang</span>
                         <div class="total-page">
-                            <ms-select :id="'pagingSize'" class="pagingOption" :data="pageLimit" :width="'100'"
-                                :iconLagre="true" @getSelectValue="getLimit"></ms-select>
+                            <ms-select :id="'pagingSize'" class="pagingOption" :data="pageLimit" :width="'60'"
+                                :iconLagre="true" @getSelectValue="getLimit" v-on:getPageSizeValue="pageSize">
+                            </ms-select>
                         </div>
                     </div>
                     <div class="paging-page-range">
-                        Từ <b>{{ from }}</b> đến <b>{{ to }}</b> bản ghi
+                        Từ &nbsp;<b>{{ from }}</b>&nbsp; đến <b>&nbsp;{{ to }}</b>&nbsp; bản ghi
                     </div>
                     <div class="paging__page-button">
                         <button class="btn--prev" @click="prevPage">
@@ -52,7 +52,8 @@
                 </div>
             </div>
         </div>
-        <ms-employee-popup v-if="isShowPopup" :formModel="pram" :dataPram="pramData"></ms-employee-popup>
+        <ms-employee-popup v-if="isShowPopup" :formModel="pram" :dataPram="pramData" @closePopup="handlClosePopup">
+        </ms-employee-popup>
     </div>
 </template>
 <script>
@@ -64,6 +65,7 @@ import {
     reactive,
     nextTick,
     computed,
+    onBeforeUnmount,
     // onUpdated,
     defineComponent,
 } from "vue";
@@ -109,13 +111,6 @@ export default defineComponent({
         getLimit(limit) {
             this.page.limit = limit;
         },
-        pagiagte(arr) {
-            let page = this.pageNumber;
-            let perPage = this.page.limit;
-            let from = page * perPage - perPage;
-            let to = page * perPage;
-            return arr.slice(from, to);
-        },
         nextPage() {
             if (this.pageNumber == this.maxPage) {
                 this.pageNumber = 1;
@@ -130,6 +125,9 @@ export default defineComponent({
             }
             this.pageNumber--;
         },
+        pageSize() {
+            this.$emit('pageSizeValue', this.page.limit)
+        }
     },
     computed: {
         displayData() {
@@ -160,7 +158,7 @@ export default defineComponent({
             mode: 0,
             EmployeeId: "",
         });
-        // let pramData = ref({});
+        let pramData = ref({});
 
         const allSelected = ref(false);
         // Lấy ra những vị trí checked
@@ -197,13 +195,19 @@ export default defineComponent({
         /**
         * Xử lý sự kiện double click tr
         *  @author DuongNhung
-        * @pram {object} item dữ liệu asset khi click tr
+        * @pram {object} item dữ liệu employee khi click tr
         */
         const handleDoubleClick = (item) => {
             proxy.pram.mode = Enum.Mode.Update;
             proxy.pramData = item;
             proxy.isShowPopup = true;
         };
+
+        const handlClosePopup = (data) => {
+            console.log(data)
+            proxy.isShowPopup = false;
+        };
+
         /**
         * Xử lý sự kiện bỏ checked 1 dòng 
         *  @author DuongNhung
@@ -215,7 +219,20 @@ export default defineComponent({
                 proxy.selectedIndex[index] = true;
             }
         };
+
+        const handleEmitData = function (item) {
+            console.log(item)
+            proxy.pram.mode = Enum.Mode.Update;
+            proxy.pramData = item;
+            proxy.isShowPopup = true;
+            // proxy.dataEmp = item
+        }
+
         onMounted(() => {
+            proxy.eventBus.on("sendDataEmp", handleEmitData)
+        });
+        onBeforeUnmount(() => {
+            proxy.eventBus.off("sendDataEmp")
         });
         return {
             selected,
@@ -226,7 +243,10 @@ export default defineComponent({
             allSelected,
             selectedIndex,
             handleClick,
+            pramData, handlClosePopup
+
         };
+
     },
     data() {
         return {
@@ -236,6 +256,7 @@ export default defineComponent({
                 offset: 0,
             },
             pageLimit: [{ value: 10 }, { value: 20 }, { value: 50 }, { value: 100 }],
+            dataEmp: {}
         };
     },
 
@@ -247,7 +268,6 @@ export default defineComponent({
 
 .pagingOption {
     width: 75px;
-    border: 1px solid #e0e0e0;
     border-radius: 4px;
     padding: 8px;
     font-weight: bold;

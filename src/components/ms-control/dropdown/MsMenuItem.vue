@@ -67,7 +67,7 @@ export default {
 
   &:hover {
     transition: 0.2s;
-    background-color: #caf6e3;
+    background-color: #5fd9a4;
     cursor: pointer;
     border-radius: 4px;
 

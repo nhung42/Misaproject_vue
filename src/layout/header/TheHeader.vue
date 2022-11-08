@@ -23,11 +23,13 @@ export default {
 </script>
 <style lang="scss">
 @import "@/style/common/icon.scss";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 .app-header {
     height: 56px;
     width: calc(100% - 200px);
     float: right;
+    font-family: Roboto;
 
     .nav {
         display: flex;
@@ -53,7 +55,7 @@ export default {
         line-height: 56px;
         margin-right: 10px;
         margin-left: 8px;
-
+        font-weight: 600;
     }
 
     .profile {

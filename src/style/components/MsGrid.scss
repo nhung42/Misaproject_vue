@@ -1,23 +1,3 @@
-/* width */
-// ::-webkit-scrollbar {
-//   width: 20px;
-// }
-
-/* Track */
-::-webkit-scrollbar-track {
-    border-radius: 4px;
-    background: #fff;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: red;
-    border-radius: 4px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -ms-border-radius: 4px;
-    -o-border-radius: 4px;
-}
 .grid-container {
     position: relative;
     border: none;
@@ -73,7 +53,8 @@ table {
             box-sizing: border-box;
             cursor: pointer;
             th {
-                font-weight: 400;
+                font-weight: 500;
+                white-space: nowrap;
             }
 
             td {
@@ -107,43 +88,6 @@ table {
         }
     }
 }
-tfoot {
-    position: sticky;
-    bottom: -1px;
-    background-color: #ffffff;
-    height: 40px;
-    border-bottom-left-radius: 3.5px;
-    border-bottom-right-radius: 3.5px;
-    &::before {
-        content: "";
-        width: 100%;
-        background-color: #e9ebee;
-        height: 1px;
-        position: absolute;
-        top: 0;
-    }
-    .container-tfooter-left {
-        display: flex;
-        align-items: center;
-        .tfooter--left {
-            width: 138px;
-        }
-    }
-    .tfooter-left {
-        display: flex;
-        align-items: center;
-        span {
-            margin: 0 4px;
-        }
-    }
-
-    .tfooter-right {
-        display: flex;
-        align-items: center;
-        width: 43%;
-    }
-}
-
 .table-function {
     display: flex;
     align-items: center;
@@ -277,7 +221,7 @@ tbody {
     border: 1px solid #afafaf;
 
     margin-right: 20px;
-    overflow: hidden;
+    // overflow: hidden;
     select {
         width: 100%;
         height: 100%;

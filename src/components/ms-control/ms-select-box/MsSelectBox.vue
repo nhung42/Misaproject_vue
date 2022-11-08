@@ -40,9 +40,9 @@ export default {
     created() {
         window.addEventListener("click", this.checkClickOn);
     },
-    beforeDestroy() {
-        window.removeEventListener("click", this.checkClickOn);
-    },
+    // beforeDestroy() {
+    //     window.removeEventListener("click", this.checkClickOn);
+    // },
     data() {
         return {
             selectedItem: this.data[0].value,
@@ -69,7 +69,6 @@ export default {
     position: relative;
     font-size: 14px;
     font-weight: bold;
-    height: 24px;
     cursor: pointer;
 }
 
@@ -92,7 +91,7 @@ export default {
     background-position: -1800px -478px;
     width: 8px;
     height: 5px;
-    margin-top: -8px;
+    margin-top: -12px;
 }
 
 .ms-select .mi-chevron-down-white {
@@ -113,7 +112,6 @@ export default {
 }
 
 .option__text {
-    width: 100%;
     font-size: 14px;
     font-weight: normal;
     display: flex;
@@ -126,11 +124,11 @@ export default {
 }
 
 .option__text:hover {
-    background-color: #ffede2;
+    background-color: #a2f399;
 }
 
 .ms-select .isSelected {
-    background-color: #ffede2;
+    background-color: #a2f399;
 }
 </style>
   

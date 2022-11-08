@@ -19,7 +19,8 @@
             </ms-tooltip>
         </div>
 
-        <ms-grid :columns="columns" :allData="allData.value" :selectedCol="true" v-model="dataSelected">
+        <ms-grid :columns="columns" :allData="allData.value" :selectedCol="true" v-model="dataSelected"
+            :tableName="employee">
         </ms-grid>
 
     </div>
@@ -63,6 +64,7 @@ export default {
         const allData = ref([]);
         const Loading = ref(true);
         const dataSelected = ref([]);
+
         let pram = reactive({
             mode: 0,
             employeeId: "",
@@ -83,9 +85,7 @@ export default {
         }
 
         onMounted(() => {
-            (async () => {
-                await proxy.loadData();
-            })();
+            proxy.loadData();
         });
 
 
@@ -101,7 +101,8 @@ export default {
          * Xử lí sự kiện đóng popup
          * @author DuongNhung
          */
-        const handlClosePopup = () => {
+        const handlClosePopup = (data) => {
+            console.log(data)
             proxy.isShowPopup = false;
         };
         const clickMenu = async (action, val) => {
@@ -116,66 +117,77 @@ export default {
         };
         const columns = ref([
             {
+                id: 1,
                 field: "EmployeeCode",
                 title: "Mã nhân viên",
                 type: "Text",
                 width: 110,
             },
             {
+                id: 2,
                 field: "EmployeeName",
                 title: "Họ và tên",
                 type: "Text",
                 width: 180,
             },
             {
+                id: 3,
                 field: "GenderName",
                 title: "Giới tính",
                 type: "Text",
                 width: 40,
             },
             {
+                id: 4,
                 field: "DateOfBirth",
                 title: "Ngày sinh",
                 type: "Date",
                 width: 100,
             },
             {
+                id: 5,
                 field: "IdentityNumber",
                 title: "Số CMND",
                 type: "Text",
                 width: 100,
             },
             {
+                id: 6,
                 field: "PositionName",
                 title: "Chức Danh",
                 type: "Text",
                 width: 110,
             },
             {
+                id: 7,
                 field: "DepartmentName",
                 title: "Tên đơn vị",
                 type: "Text",
                 width: 110,
             },
             {
+                id: 8,
                 field: "BankAccountNumber",
                 title: "Số Tài khoản",
                 type: "Text",
                 width: 110,
             },
             {
+                id: 9,
                 field: "BankName",
                 title: "Tên ngân hàng",
                 type: "Text",
                 width: 110,
             },
             {
+                id: 10,
                 field: "BankBranchName",
                 title: "Chi nhánh TK Ngân hàng",
                 type: "Text",
                 width: 160,
             },
             {
+                id: 11,
                 field: "",
                 title: "Chức năng",
                 type: "Action",

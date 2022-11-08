@@ -39,6 +39,8 @@ export default {
   width: 100%;
   height: 100vh;
   box-sizing: border-box;
+  font-family: Roboto;
+  font-size: 13px;
 }
 
 #app {
@@ -46,7 +48,7 @@ export default {
     width: calc(100% - 200px);
     height: calc(100vh - 56px);
     display: flex;
-    font-family: Roboto;
+
 
     &-router-view {
       width: 100%;

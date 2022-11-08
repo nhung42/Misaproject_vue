@@ -1,108 +1,107 @@
 @import "/src/style/common/color.scss";
 .btn {
-  min-width: 80px;
-  padding: 0 16px;
-  text-align: center;
-  height: 36px;
-  white-space: nowrap;
-  display: flex;
-  overflow: hidden;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-  font-size: 13px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
-  outline: none !important;
-  &.outline-button {
-    outline: none !important;
-  }
-  &.btn-radius {
-    border-radius: $button-boder-radius;
-    -webkit-border-radius: $button-boder-radius;
-    -moz-border-radius: $button-boder-radius;
-    -ms-border-radius: $button-boder-radius;
-    -o-border-radius: $button-boder-radius;
-  }
-  &.disabled-icon:disabled {
-    background-color: $button-disable;
-  }
-  &.btn-boder-none {
-    border: none;
-  }
-  .btn-text {
+    padding: 0 16px;
+    text-align: center;
+    height: 36px;
+    white-space: nowrap;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    justify-content: center;
+    align-items: center;
     font-size: 13px;
-    color: #fff;
-    margin-left: 3px;
-  }
-  &:hover {
-    cursor: pointer;
-  }
-  &.primary {
-    color: $btn-primary-color;
-    background-color: $btn-primary-color;
-    &:hover {
-      background-color: $btn-primary-hover-bg;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+    outline: none !important;
+    &.outline-button {
+        outline: none !important;
     }
-    &:active {
-      background-color: $btn-primary-active-bg;
-      border: solid 1px #d1edf4;
+    &.btn-radius {
+        border-radius: $button-boder-radius;
+        -webkit-border-radius: $button-boder-radius;
+        -moz-border-radius: $button-boder-radius;
+        -ms-border-radius: $button-boder-radius;
+        -o-border-radius: $button-boder-radius;
     }
-  }
-  &.secodary {
-    background-color: #fff;
-    border: 1px solid #afafaf;
-    color: #000;
-    min-height: 36px;
+    &.disabled-icon:disabled {
+        background-color: $button-disable;
+    }
+    &.btn-boder-none {
+        border: none;
+    }
     .btn-text {
-      color: #000;
-    }
-  }
-  &.abort {
-    background-color: #fff;
-    border: 1px solid #bbbcbc;
-    color: #29a9cb;
-    .btn-text {
-      color: #29a9cb;
+        font-size: 13px;
+        color: #fff;
+        margin-left: 3px;
     }
     &:hover {
-      background-color: #d1edf4;
-      border: 1px solid #bbbcbc;
-      .btn-text {
-        color: #bbbcbc;
-      }
+        cursor: pointer;
     }
-    &:active {
-      background-color: #fff;
-      border: 1px solid #bbbcbc;
-      .btn-text {
-        color: #bbbcbc;
-      }
+    &.primary {
+        color: $btn-primary-color;
+        background-color: $btn-primary-color;
+        &:hover {
+            background-color: $btn-primary-hover-bg;
+        }
+        &:active {
+            background-color: $btn-primary-active-bg;
+            border: solid 1px #d1edf4;
+        }
     }
-    &:focus {
-      background-color: #fff;
-      border: 1px solid #bbbcbc;
-      .btn-text {
-        color: #bbbcbc;
-      }
+    &.secodary {
+        background-color: #fff;
+        border: 1px solid #afafaf;
+        color: #000;
+        height: 36px;
+        .btn-text {
+            color: #000;
+        }
     }
-  }
+    &.abort {
+        background-color: #fff;
+        border: 1px solid #bbbcbc;
+        color: #29a9cb;
+        .btn-text {
+            color: #29a9cb;
+        }
+        &:hover {
+            background-color: #d1edf4;
+            border: 1px solid #bbbcbc;
+            .btn-text {
+                color: #bbbcbc;
+            }
+        }
+        &:active {
+            background-color: #fff;
+            border: 1px solid #bbbcbc;
+            .btn-text {
+                color: #bbbcbc;
+            }
+        }
+        &:focus {
+            background-color: #fff;
+            border: 1px solid #bbbcbc;
+            .btn-text {
+                color: #bbbcbc;
+            }
+        }
+    }
 }
 .btn.secodary:hover {
-  background-color: #bbbcbc !important;
-  .btn-text {
-    color: #fff;
-  }
+    background-color: #bbbcbc !important;
+    .btn-text {
+        color: #fff;
+    }
 }
 .btn.secodary:active {
-  background-color: #bbbcbc !important;
-  .btn-text {
-    color: #fff;
-  }
+    background-color: #bbbcbc !important;
+    .btn-text {
+        color: #fff;
+    }
 }
 .btn.secodary:focus {
-  background-color: #bbbcbc;
-  border: solid 1px #d1edf4;
-  .btn-text {
-    color: #fff;
-  }
+    background-color: #bbbcbc;
+    border: solid 1px #d1edf4;
+    .btn-text {
+        color: #fff;
+    }
 }

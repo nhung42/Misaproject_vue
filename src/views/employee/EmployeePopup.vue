@@ -176,11 +176,19 @@
     </teleport>
 
     <!-- Toast message thêm mới thành công -->
-    <ms-message v-if="isShowMessage" textMessage="Thêm mới dữ liệu thành công" iconMessage="ic-success"></ms-message>
+    <teleport to='body'>
+        <ms-message v-if="isShowMessage" toastAct=" Thêm">
+        </ms-message>
+    </teleport>
+    <!-- Toast message update thành công -->
+    <teleport to='body'>
+        <ms-message v-if="isShowMessageUpdate" toastAct=" Sửa">
+        </ms-message>
+    </teleport>
 
     <!-- Dialog messagebox hủy bỏ khai báo -->
     <teleport to="body">
-        <ms-message-box leftIcon="ic-warning" :textMessageBox="Resource.TitleDialogMessage.AddAsset.VI"
+        <ms-message-box leftIcon="icon-warning" :textMessageBox="Resource.TitleDialogMessage.AddAsset.VI"
             :disabledValueLeft="false" :disabledValueRight="false" v-if="isDialogMessCancelAdd">
             <v-button :text="Resource.TitleBtnDialog.Cancel.VI" radius></v-button>
             <v-button :text="Resource.TitleBtnDialog.NoCancel.VI" type="secodary" @click="isDialogMessCancelAdd = false"
@@ -190,10 +198,9 @@
 
     <!-- Dialog messagebox cập nhật -->
     <teleport to="body">
-        <ms-message-box leftIcon="ic-warning" :textMessageBox="Resource.TitleDialogMessage.SaveUpdate.VI"
+        <ms-message-box leftIcon="icon-warring" :textMessageBox="Resource.TitleDialogMessage.SaveUpdate.VI"
             :disabledValueLeft="false" :disabledValueRight="false" v-if="isDialogMessUpdate">
-            <v-button :text="Resource.TitleBtnDialog.Save.VI" radius></v-button>
-            <v-button :text="Resource.TitleBtnDialog.NoSave.VI" type="abort" radius></v-button>
+            <v-button :text="Resource.TitleBtnDialog.Save.VI" radius @click="updateData"></v-button>
             <v-button :text="Resource.TitleBtnDialog.Cancel.VI" type="secodary" radius></v-button>
         </ms-message-box>
     </teleport>
@@ -211,7 +218,7 @@ import {
     getCurrentInstance,
     onMounted,
     ref,
-    watch,
+    watchEffect,
     computed,
 } from "vue";
 import {
@@ -224,10 +231,12 @@ import VInputDate from "@/components/ms-control/ms-date-box/MsDateBox.vue";
 import VDropDown from "@/components/ms-control/dropdown/MsDropdown.vue";
 import VTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
 import MsMessageBox from "@/components/dialog/MsMessageBox.vue";
+import MsMessage from "@/components/dialog/MSToastMessage.vue";
 import Resource from "@/dictionary/resource";
 import ResourceTable from "@/dictionary/resourceTable";
 import Enum from "@/dictionary/enum.js";
 import axios from "axios";
+
 
 export default {
     name: "MsPopupEmployee",
@@ -238,6 +247,7 @@ export default {
         VInputDate,
         VTooltip,
         MsMessageBox,
+        MsMessage
     },
     props: {
         configStyle: {
@@ -261,6 +271,7 @@ export default {
             this.$parent.close();
         },
     },
+    emits: ["closePopup"],
     setup(props, { emit }) {
         const { proxy } = getCurrentInstance();
         //Show toastMessage
@@ -268,6 +279,7 @@ export default {
         const isShowMessage = ref(false);
         const isShowPopup = ref(false);
         const isDialogMessCancelAdd = ref(false);
+        const isShowMessageUpdate = ref(false);
 
         const errorMessage = ref({});
         //Show dialog cập nhật
@@ -340,11 +352,53 @@ export default {
                 .post("https://amis.manhnv.net/api/v1/Employees", obj)
                 .then((res) => {
                     console.log("post:", res.data);
+                    proxy.isShowMessage = true;
                 })
                 .catch(function (error) {
                     console.log("error:", error.response.data);
 
                 });
+        }
+        /**
+         * Call api update thông tin nhân viên
+         * @param {*} obj 
+         * author DuongNhung
+         */
+        async function updateEmployee(obj) {
+            console.log("Sua du lieu:");
+            console.log(obj);
+            axios
+                .put("https://amis.manhnv.net/api/v1/Employees/" + obj.EmployeeId, obj)
+                .then((res) => {
+                    console.log("post:", res.data);
+                    proxy.isShowMessageUpdate = true;
+                })
+                .catch(function (error) {
+                    console.log("error:", error.response.data);
+
+                });
+        }
+        const getGender = () => {
+            if (proxy.dataForm.GenderName == 'Nam') {
+                proxy.dataForm.Gender = 1;
+            }
+            if (proxy.dataForm.GenderName == 'Nữ') {
+                proxy.dataForm.Gender = 0;
+            }
+            else {
+                proxy.dataForm.Gender = 2;
+            }
+        }
+        /**
+         * Sửa thông thin nhân viên,load lại data
+         */
+        const updateData = () => {
+            // eslint-disable-next-line no-debugger
+            debugger
+            proxy.isDialogMessUpdate = false;
+            proxy.updateEmployee(dataForm.value);
+            proxy.isShowPopup = false;
+
         }
         //Sự kiện close error message Multiple
         const handleCloseErrorMultiple = () => {
@@ -352,7 +406,7 @@ export default {
             proxy.isSubmited = true;
             proxy.focusInput();
         };
-        watch(
+        watchEffect(
             () => dataForm.value,
         );
         onMounted(() => {
@@ -373,7 +427,7 @@ export default {
                     case Enum.Mode.Update:
                         proxy.title = Resource.TitleFormPopup.FormUpdateEmployee.VI;
                         // Lấy dữ liệu nhân viên theo id nhân viên
-                        proxy.dataForm = proxy.allData[0];
+                        proxy.dataForm = proxy.dataPram;
                         proxy.dataForm.Mode = 2;
                         break;
 
@@ -390,6 +444,7 @@ export default {
         });
         onMounted(() => {
             proxy.loadDataDepartment();
+            proxy.getGender();
         });
 
         /**
@@ -568,7 +623,6 @@ export default {
                         case (Enum.Mode.Add): {
                             // eslint-disable-next-line no-debugger
                             debugger
-                            proxy.isShowMessage = true;
                             proxy.addEmployee(dataForm.value);
                             break;
                         }
@@ -599,17 +653,20 @@ export default {
             titleErrValidate,
             isDialogMessCancelAdd,
             isDialogMessUpdate,
+            isShowMessageUpdate,
             Resource,
             ResourceTable,
             DataDepartment,
             isShowDialogDetail,
             loadDataDepartment,
             clickDataDepartment,
+            updateData,
             focusInput,
             dataForm,
+            getGender,
             changeValueInput,
             addEmployee,
-            // updateData,
+            updateEmployee,
             saveData,
             handlePopupClose,
             errorMessage,
