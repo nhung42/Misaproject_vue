@@ -5,8 +5,7 @@
             <span v-if="hasInput">*</span>
         </label>
         <div class="flex-row" :class="[leftIcon ? 'has-icon' : '']">
-            <date-picker :id="id || ''" class="input-text" v-model="dateValue" format="dd/MM/yyyy"
-                :placeholder="placeholder" :tabindex="tabindex">
+            <date-picker :id="id || ''" class="input-text" v-model="dateValue" format="dd/MM/yyyy" :tabindex="tabindex">
             </date-picker>
         </div>
         <span v-if="disabledMessage" class="error-message">{{
@@ -43,7 +42,7 @@ export default defineComponent({
             }
         );
 
-        const changeValue = function (e) {
+        const changeValue = function () {
             proxy.$emit("update:modelValue", proxy.dateValue);
             nextTick(() => {
                 emit("changeValue", proxy.dateValue, proxy.valueField);

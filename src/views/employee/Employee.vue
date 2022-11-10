@@ -9,7 +9,8 @@
                     @click="handleClickAdd">
                 </ms-button>
             </ms-tooltip>
-            <ms-popup-employee v-if="isShowPopup" :formModel="pram" @closePopup="handlClosePopup"></ms-popup-employee>
+            <ms-popup-employee v-if="isShowPopup" :formModel="pram" @closePopup="handlClosePopup">
+            </ms-popup-employee>
         </div>
         <div class="page__toolbar">
             <ms-input :hasLabel="false" leftIcon="ic-search" id="txt-search" :radius="true" placeholder="Tìm kiếm "
@@ -18,10 +19,8 @@
                 <div class="icon-reload margin-left-10px" @click="loadData"></div>
             </ms-tooltip>
         </div>
-
-        <ms-grid :columns="columns" :selectedCol="true" v-model="dataSelected" :tableName="employee" :search="search">
+        <ms-grid :columns="columns" :selectedCol="true" v-model="dataSelected" :search="search" @loadData="loadData">
         </ms-grid>
-
     </div>
 </template>
 
@@ -65,25 +64,6 @@ export default {
             mode: 0,
             employeeId: "",
         });
-        // async function loadData() {
-        //     try {
-        //         proxy.isLoading = true;
-        //         await axios
-        //             .get('https://amis.manhnv.net/api/v1/Employees/filter')
-        //             .then(response => {
-        //                 let data = response.data?.Data;
-        //                 proxy.allData.value = data;
-        //             })
-        //         proxy.isLoading = false;
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
-
-        // onMounted(() => {
-        //     proxy.loadData();
-        // });
-
 
         /**
          * Xử lý sự kiện click thêm mới
@@ -97,8 +77,7 @@ export default {
          * Xử lí sự kiện đóng popup
          * @author DuongNhung
          */
-        const handlClosePopup = (data) => {
-            console.log(data)
+        const handlClosePopup = () => {
             proxy.isShowPopup = false;
         };
         const clickMenu = async (action, val) => {
@@ -124,7 +103,7 @@ export default {
                 field: "EmployeeName",
                 title: "Họ và tên",
                 type: "Text",
-                width: 180,
+                width: 140,
             },
             {
                 id: 3,
@@ -191,7 +170,6 @@ export default {
             },
         ]);
 
-
         return {
             columns,
             allData,
@@ -206,15 +184,16 @@ export default {
         };
     },
 
-    // watch: {
-    //     search() {
-    //         console.log(this.search);
-    //     }
-    // },
+    loadData(data) {
+        this.reloadData = data
+    },
+
+
     data() {
         return {
             isShowPopup: false,
             search: "",
+            reloadData: null
         };
     },
 };

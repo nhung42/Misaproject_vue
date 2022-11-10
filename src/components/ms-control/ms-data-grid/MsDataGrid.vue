@@ -5,7 +5,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th v-if="selectedCol" style="width: 47px">
+                            <th v-if="selectedCol">
                                 <div class="th-inner">
                                     <ms-checkbox v-model="allSelected"></ms-checkbox>
                                 </div>
@@ -39,7 +39,7 @@
                         </div>
                     </div>
                     <div class="paging-page-range">
-                        {{ pageUpdate(toalRecord) }} bản ghi
+                        Từ {{ pageUpdate(toalRecord) }} bản ghi
                     </div>
                     <div class="paging__page-button">
                         <button class="btn--prev" @click="prevPage">
@@ -60,7 +60,7 @@
         <ms-message-box :disabledTop="false" :title="Resource.TitleDialog.DeleteOneEmployee" leftIcon="icon-warning"
             :valueMessageBox="valueMessageBox" :textMessageBox="Resource.TitleDialogMessage.DeleteOneEmployee.VI"
             :disabledValueLeft="false" :disabledValueRight="true" v-if="isDialogMessDelete">
-            <ms-button :text="Resource.TitleBtnDialog.Delete.VI" @click="deleteEmployee(item)" radius></ms-button>
+            <ms-button :text="Resource.TitleBtnDialog.Delete.VI" @click="handleDeleteData(id)" radius></ms-button>
             <ms-button :text="Resource.TitleBtnDialog.NoCancel.VI" type="secodary" @click="isDialogMessDelete = false"
                 radius>
             </ms-button>
@@ -145,7 +145,6 @@ export default defineComponent({
     methods: {
         getLimit(limit) {
             this.page.limit = limit;
-            console.log(limit);
             this.loadData();
         },
         loadData() {
@@ -155,7 +154,6 @@ export default defineComponent({
                     this.employeeData = response.data?.Data;
                     this.toalRecord = response.data.TotalRecord;
                 })
-
         },
 
         nextPage() {
@@ -163,15 +161,12 @@ export default defineComponent({
                 this.pageNumber++
                 this.loadData();
             }
-
         },
         prevPage() {
             if (this.pageNumber > 1) {
                 this.pageNumber--;
                 this.loadData();
-
             }
-
         },
         pageUpdate(total) {
             return `${this.page.limit * (this.pageNumber - 1) + 1} - ${this.page.limit * this.pageNumber > total
@@ -186,6 +181,7 @@ export default defineComponent({
         const selected = ref([]);
         const isShowPopup = ref(false);
         const isDialogMessDelete = ref(false);
+        const isDialogMessCancelDelete = ref(false);
         window.tables = proxy;
         let pram = reactive({
             mode: 0,
@@ -197,9 +193,8 @@ export default defineComponent({
         // Lấy ra những vị trí checked
         const selectedIndex = ref([]);
         const dataSelected = computed(() =>
-            selectedIndex.value.map((x, i) => x && proxy.allData[i]).filter((x) => x)
+            selectedIndex.value.map((x, i) => x && proxy.allData[i].EmployeeId).filter((x) => x)
         );
-
         // Cập nhật dataSelected vào selectedData
         onMounted(() => {
             watch(
@@ -229,9 +224,11 @@ export default defineComponent({
          * @param {*} 
          * author DuongNhung
          */
-        async function deleteEmployee(id) {
+
+        const handleDeleteData = function (id) {
+            console.log(id);
             axios
-                .delete("https://amis.manhnv.net/api/v1/Employees/" + id)
+                .delete(`https://amis.manhnv.net/api/v1/Employees/${id}`)
                 .then(() => {
                     this.loadData();
                 });
@@ -239,16 +236,18 @@ export default defineComponent({
         /**
         * Xử lý sự kiện double click tr
         *  @author DuongNhung
-        * @pram {object} item dữ liệu employee khi click tr
+        * @pram {object} item dữ liệu employeehandlClosePopup khi click tr
         */
         const handleDoubleClick = (item) => {
             proxy.pram.mode = Enum.Mode.Update;
             proxy.pramData = item;
             proxy.isShowPopup = true;
         };
-
-        const handlClosePopup = (data) => {
-            console.log(data)
+        /**
+         * Xử lí sự kiện đóng popup
+         * @param {*} 
+         */
+        const handlClosePopup = () => {
             proxy.isShowPopup = false;
         };
 
@@ -270,18 +269,14 @@ export default defineComponent({
             proxy.pramData = item;
             proxy.isShowPopup = true;
         }
-        const handleDeleteData = function (item) {
-            console.log(item);
-            proxy.isDialogMessDelete = true;
-        }
-
         onMounted(() => {
             proxy.eventBus.on("sendDataEmp", handleEmitData);
-            proxy.eventBus.on("senDataEmpDelete", handleDeleteData)
+            proxy.eventBus.on("senDataEmpDelete", handleDeleteData);
         });
         onBeforeUnmount(() => {
             proxy.eventBus.off("sendDataEmp");
-            proxy.eventBus.off("senDataEmpDelete")
+            proxy.eventBus.off("senDataEmpDelete");
+
         });
         return {
             selected,
@@ -296,7 +291,7 @@ export default defineComponent({
             pramData,
             handlClosePopup,
             isDialogMessDelete,
-            deleteEmployee
+            isDialogMessCancelDelete,
 
         };
 

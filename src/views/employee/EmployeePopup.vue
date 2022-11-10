@@ -71,7 +71,7 @@
                             <div class="m-row display-flex">
                                 <div class="input-wrapper width-40">
                                     <v-input-date label="Ngày sinh" hasLabel tabindex="5" valueField="DateOfBirth"
-                                        v-model="dataForm.DateOfBirth">
+                                        v-model="dataForm.DateOfBirth" placeholder="dd/mm/yy">
                                     </v-input-date>
                                 </div>
                                 <div class="input-wrapper flex-1 margin-left-10px">
@@ -177,7 +177,7 @@
 
     <!-- Toast message thêm mới thành công -->
     <teleport to='body'>
-        <ms-message v-if="isShowMessage" toastAct=" Thêm">
+        <ms-message v-if="isShowMessage" toastAct=" Thêm" @closeOpenToast="closeOpenToast">
         </ms-message>
     </teleport>
     <!-- Toast message update thành công -->
@@ -270,6 +270,9 @@ export default {
         close() {
             this.$parent.close();
         },
+        closeOpenToast() {
+            this.isShowMessage = !this.isShowMessage
+        }
     },
     emits: ["closePopup"],
     setup(props, { emit }) {
@@ -345,14 +348,17 @@ export default {
                 console.log(error);
             }
         }
+        /**
+         * Call api thêm mới thông tin employee
+         * @param {*} obj 
+         */
         async function addEmployee(obj) {
-            console.log("Them du lieu:");
-            console.log(obj);
             axios
                 .post("https://amis.manhnv.net/api/v1/Employees", obj)
                 .then((res) => {
                     console.log("post:", res.data);
                     proxy.isShowMessage = true;
+                    this.$emit('closePopup')
                 })
                 .catch(function (error) {
                     console.log("error:", error.response.data);
@@ -365,8 +371,6 @@ export default {
          * author DuongNhung
          */
         async function updateEmployee(obj) {
-            console.log("Sua du lieu:");
-            console.log(obj);
             axios
                 .put("https://amis.manhnv.net/api/v1/Employees/" + obj.EmployeeId, obj)
                 .then((res) => {

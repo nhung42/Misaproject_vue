@@ -1,5 +1,5 @@
 <template>
-    <tr class="ms-tr">
+    <tr class="ms-tr" style="height: 48px !important;">
         <ms-td v-if="selectedCol" :config="configSelect" v-model="select">
         </ms-td>
         <ms-td v-for="col in columns" :key="col.id" :config="col" :value="data[col.field]" :emp="data">
@@ -77,19 +77,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-tr {
-    height: 40px;
-    border-bottom: 1px solid #e9ebee;
 
-    &:hover td {
-        background-color: rgb(236, 238, 241) !important;
-    }
-
-    &:focus td button,
-    &:focus-within td button,
-    &:active td button {
-        background-color: rgb(236, 238, 241) !important;
-    }
-}
 </style>
   

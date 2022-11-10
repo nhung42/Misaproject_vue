@@ -1,60 +1,55 @@
 @import "/src/style/common/color.scss";
 .input-checkbox {
-  position: relative;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
 }
 
 input[type="checkbox"] {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  background: #fff;
-  outline: none;
-  border-radius: 2px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  -ms-border-radius: 2px;
-  -o-border-radius: 2px;
-  transition: 0.2s;
-  transition-timing-function: ease-in-out;
-  position: relative;
-  cursor: pointer;
-  border: 1px solid #50b83c;
-  &:disabled {
-    border: 1px solid #bec0c4;
-    &:hover {
-      border: 1px solid #bec0c4;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    outline: none;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    transition: 0.2s;
+    transition-timing-function: ease-in-out;
+    position: relative;
+    cursor: pointer;
+    border: 1px solid #50b83c;
+    &:disabled {
+        border: 1px solid #bec0c4;
+        &:hover {
+            border: 1px solid #bec0c4;
+        }
     }
-  }
-  &:hover {
-    border: 1px solid #50b83c;
-  }
-  &:focus {
-    border: 1px solid #50b83c;
-  }
+
+    &:focus {
+        border: 1px solid #50b83c;
+    }
 }
 input:checked[type="checkbox"] {
-  border: 1px solid #50b83c;
-  background-color: #50b83c;
-  &:disabled {
-    border: 1px solid #bec0c4;
-  }
+    border: 1px solid #50b83c;
+    background-color: #50b83c;
+    &:disabled {
+        border: 1px solid #bec0c4;
+    }
 }
 input[type="checkbox"]::before {
-  content: "";
-  width: 14px;
-  height: 14px;
-  position: absolute;
-  background-position: -69px -510px;
-  display: none;
-}
-.input-checkbox:hover {
-  background-color: #57c841;
+    content: "";
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    background-position: -69px -510px;
+    display: none;
 }
 input[type="checkbox"] {
-  accent-color: #409330 !important;
-  background-color: #fff;
+    accent-color: #409330 !important;
+    background-color: #fff;
 }

@@ -23,9 +23,7 @@ export default {
      * Author: 
      */
     closeOpenToast() {
-      setTimeout(() => {
-        this.toastStatus = false;
-      }, 4000);
+      this.$emit('closeOpenToast')
     },
   },
 };

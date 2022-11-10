@@ -1,5 +1,5 @@
 <template>
-  <td :style="styles" :class="[cls, styleAlign]">
+  <td :style="styles" class="cls styleAlign" :class="[isClickDelete ? 'z-index-5' : '']">
     <div class="td-inner" ref="td">
       <div v-if="config.type == ColumnType.Checkbox">
         <ms-checkbox v-model="data"></ms-checkbox>
@@ -10,12 +10,11 @@
           <div class="text-edit" @click="handleClickUpdate($event, emp)">Sửa</div>
           <button class="icon-combobox-function" @click="handleClickOption">
           </button>
-        </div>
-        <div v-show="isShowOption" class="dlg-option" v-if="this.isShowOption == true" @click="closeOption">
-          <div @click="handleClickDelete($event, item)" class="option option-delete">Xoá</div>
+          <div class="dlg-option" v-show="isShowOption" @click="closeOption">
+            <div @click="handleClickDelete($event, emp.EmployeeId)" class="option_function option-delete">Xoá</div>
+          </div>
         </div>
       </div>
-
       <div v-else-if="config.type == ColumnType.Date">
         {{ formatDate(text) }}
       </div>
@@ -63,15 +62,16 @@ export default {
     emp: {
       type: Object
     }
+
   },
   methods: {
     formatDate(dob) {
       if (dob) {
         let date = new Date(dob);
         let day = date.getDate();
-        day = day > 10 ? day : `0${day}`;
+        day = day >= 10 ? day : `0${day}`;
         let month = date.getMonth() + 1;
-        month = month > 10 ? month : `0${month}`;
+        month = month >= 10 ? month : `0${month}`;
         let year = date.getFullYear();
         return `${day}/${month}/${year}`;
       }
@@ -81,6 +81,7 @@ export default {
     const { proxy } = getCurrentInstance();
     window.tr = proxy;
     const data = ref(props.value);
+    const isClickDelete = ref(false);
 
     onMounted(() => {
       watch(
@@ -106,7 +107,8 @@ export default {
     };
 
     const handleClickOption = () => {
-      proxy.isShowOption = true;
+      proxy.isShowOption = !proxy.isShowOption;
+      proxy.isClickDelete = !proxy.isClickDelete;
     }
     const handleClickUpdate = (e, item) => {
       proxy.eventBus.emit("sendDataEmp", item)
@@ -115,7 +117,7 @@ export default {
       proxy.eventBus.emit("senDataEmpDelete", item)
     }
     const closeOption = () => {
-      proxy.isShowOption = false;
+      proxy.isShowOption = !proxy.isShowOption;
     }
     const styles = computed(() => {
       let arr = [];
@@ -190,7 +192,8 @@ export default {
       handleClickOption,
       handleClickUpdate,
       closeOption,
-      handleClickDelete
+      handleClickDelete,
+      isClickDelete
     };
   },
   data() {
@@ -212,6 +215,9 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
 
   button {
     border: unset;
@@ -234,13 +240,24 @@ export default {
 }
 
 .dlg-option {
-  width: 40px;
-  text-align: center;
-  border-radius: 2px;
   z-index: 5;
-  background-color: #fff;
+  background-color: white;
   position: absolute;
   border: 1px solid #babec5;
+  top: 25px;
+  right: 16px;
+
+
+  .option_function {
+    cursor: pointer;
+    padding: 5px 10px;
+  }
+
+  .option:hover {
+    color: #08bf1e;
+    background-color: #e8e9ec;
+    transition: 300ms;
+  }
 }
 
 .action-group {
@@ -261,16 +278,11 @@ export default {
   font-size: 14px;
   max-width: 248px;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 
-input[type="checkbox"] {
-  width: 14px;
-  height: 14px;
-}
-
 .ms-tr {
+
   .text-center {
     display: flex;
     align-items: center;
@@ -299,6 +311,7 @@ table tbody td:first-child {
   z-index: 1;
   background-color: #fff;
   width: 50px;
+  padding-left: 16px;
 }
 
 table tbody td:nth-child(2) {
@@ -311,10 +324,11 @@ table tbody td:nth-child(2) {
 
 table tbody td:nth-child(3) {
   position: sticky;
-  left: 170px;
+  left: 158px;
   z-index: 1;
   background-color: #fff;
   text-align: left;
+
 }
 
 table td:nth-child(4) {
@@ -335,6 +349,10 @@ table tbody td:last-child {
 
 .option-delete {
   z-index: 5;
+}
+
+.z-index-5 {
+  z-index: 99999999999 !important;
 }
 </style>
   
