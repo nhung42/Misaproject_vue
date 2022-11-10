@@ -56,6 +56,7 @@ export default {
         margin-right: 10px;
         margin-left: 8px;
         font-weight: 600;
+        font-size: 18px;
     }
 
     .profile {

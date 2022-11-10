@@ -40,7 +40,7 @@ export default {
   height: 100vh;
   box-sizing: border-box;
   font-family: Roboto;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 #app {

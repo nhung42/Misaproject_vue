@@ -13,14 +13,13 @@
         </div>
         <div class="page__toolbar">
             <ms-input :hasLabel="false" leftIcon="ic-search" id="txt-search" :radius="true" placeholder="Tìm kiếm "
-                :disabledMessage="false" message="" class="input_search"></ms-input>
+                :disabledMessage="false" message="" class="input_search" v-model="search"></ms-input>
             <ms-tooltip content="Lấy lại dữ liệu" placement="bottom" right="bottom">
                 <div class="icon-reload margin-left-10px" @click="loadData"></div>
             </ms-tooltip>
         </div>
 
-        <ms-grid :columns="columns" :allData="allData.value" :selectedCol="true" v-model="dataSelected"
-            :tableName="employee">
+        <ms-grid :columns="columns" :selectedCol="true" v-model="dataSelected" :tableName="employee" :search="search">
         </ms-grid>
 
     </div>
@@ -33,14 +32,11 @@ import MsInput from "@/components/ms-control/ms-text-box/MsTextBox.vue";
 import MsTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
 import Enum from "@/dictionary/enum.js";
 import MsPopupEmployee from "@/views/employee/EmployeePopup.vue";
-import axios from 'axios';
 import {
     getCurrentInstance,
-    onMounted,
     reactive,
     ref
 } from "vue";
-
 export default {
     name: "MsEmployee",
     components: {
@@ -69,24 +65,24 @@ export default {
             mode: 0,
             employeeId: "",
         });
-        async function loadData() {
-            try {
-                proxy.isLoading = true;
-                await axios
-                    .get('https://amis.manhnv.net/api/v1/Employees/filter')
-                    .then(response => {
-                        let data = response.data?.Data;
-                        proxy.allData.value = data;
-                    })
-                proxy.isLoading = false;
-            } catch (error) {
-                console.log(error);
-            }
-        }
+        // async function loadData() {
+        //     try {
+        //         proxy.isLoading = true;
+        //         await axios
+        //             .get('https://amis.manhnv.net/api/v1/Employees/filter')
+        //             .then(response => {
+        //                 let data = response.data?.Data;
+        //                 proxy.allData.value = data;
+        //             })
+        //         proxy.isLoading = false;
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
 
-        onMounted(() => {
-            proxy.loadData();
-        });
+        // onMounted(() => {
+        //     proxy.loadData();
+        // });
 
 
         /**
@@ -205,14 +201,20 @@ export default {
             clickMenu,
             handlClosePopup,
             pram,
-            loadData,
+            // loadData,
             handleClickAdd,
         };
     },
 
+    // watch: {
+    //     search() {
+    //         console.log(this.search);
+    //     }
+    // },
     data() {
         return {
             isShowPopup: false,
+            search: "",
         };
     },
 };

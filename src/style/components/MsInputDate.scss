@@ -1,54 +1,54 @@
 // Override the css of date-picker library.
 .input-date__field {
-  position: relative;
-  .text-label {
-    font-size: 13px;
-    margin-bottom: 8px;
-    display: inline-block;
-  }
-  .vuejs3-datepicker {
-    height: 36px;
-    width: 100%;
-    input {
-      height: 100%;
-      width: 100%;
+    position: relative;
+    .text-label {
+        font-size: 14px;
+        margin-bottom: 8px;
+        display: inline-block;
     }
-    .vuejs3-datepicker__value {
-      min-width: 150px !important;
-      border: 1px solid #afafaf;
-      height: 36px;
-      border-radius: 3px !important;
-      .vuejs3-datepicker__icon {
-        position: absolute;
-        right: 10px !important;
-        margin-top: -5px;
-      }
+    .vuejs3-datepicker {
+        height: 36px;
+        width: 100%;
+        input {
+            height: 100%;
+            width: 100%;
+        }
+        .vuejs3-datepicker__value {
+            min-width: 150px !important;
+            border: 1px solid #afafaf;
+            height: 36px;
+            border-radius: 3px !important;
+            .vuejs3-datepicker__icon {
+                position: absolute;
+                right: 10px !important;
+                margin-top: -5px;
+            }
+        }
+        .vuejs3-datepicker__value:hover,
+        .vuejs3-datepicker__value:focus,
+        .vuejs3-datepicker__value:active {
+            border: 1px solid #50b83c;
+        }
     }
-    .vuejs3-datepicker__value:hover,
-    .vuejs3-datepicker__value:focus,
-    .vuejs3-datepicker__value:active {
-      border: 1px solid #50b83c;
-    }
-  }
 }
 .datepicker--error .el-input__wrapper {
-  border: 1px solid red !important;
+    border: 1px solid red !important;
 }
 .el-input {
-  padding: 0 !important;
-  border: none !important;
-  border-radius: 3px !important;
-  -webkit-border-radius: 3px !important;
-  -moz-border-radius: 3px !important;
-  -ms-border-radius: 3px !important;
-  -o-border-radius: 3px !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 3px !important;
+    -webkit-border-radius: 3px !important;
+    -moz-border-radius: 3px !important;
+    -ms-border-radius: 3px !important;
+    -o-border-radius: 3px !important;
 }
 .ic-date {
-  background-image: url(/src/assets/img/datepicker-icon.png);
-  position: absolute;
-  right: 6px;
-  width: 17px;
-  height: 17px;
-  cursor: pointer;
-  margin-top: -26px;
+    background-image: url(/src/assets/img/datepicker-icon.png);
+    position: absolute;
+    right: 6px;
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+    margin-top: -26px;
 }

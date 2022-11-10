@@ -393,8 +393,6 @@ export default {
          * Sửa thông thin nhân viên,load lại data
          */
         const updateData = () => {
-            // eslint-disable-next-line no-debugger
-            debugger
             proxy.isDialogMessUpdate = false;
             proxy.updateEmployee(dataForm.value);
             proxy.isShowPopup = false;

@@ -16,9 +16,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <ms-tr v-for="(item, i) in allData" :key="item.EmployeeId" :data="item" :columns="columns"
-                            :selectedCol="selectedCol" v-model="selectedIndex[i]" @click="handleClick(i)"
-                            @dblclick="handleDoubleClick(item)">
+                        <ms-tr v-for="(item, i) in this.employeeData" :key="item.EmployeeId" :data="item"
+                            :columns="columns" :selectedCol="selectedCol" v-model="selectedIndex[i]"
+                            @click="handleClick(i)" @dblclick="handleDoubleClick(item)">
                             {{ item.EmployeeId }}
                         </ms-tr>
                     </tbody>
@@ -26,7 +26,7 @@
             </div>
             <div class="paging">
                 <div class="paging-left"> Tổng:
-                    <p> <span>{{ allData.length }}</span></p>
+                    <p> <span>{{ this.toalRecord }}</span></p>
                     &nbsp;bản ghi
                 </div>
                 <div class="paging-right">
@@ -34,12 +34,12 @@
                         <span>Số bản ghi/ trang</span>
                         <div class="total-page">
                             <ms-select :id="'pagingSize'" class="pagingOption" :data="pageLimit" :width="'60'"
-                                :iconLagre="true" @getSelectValue="getLimit" v-on:getPageSizeValue="pageSize">
+                                :iconLagre="true" @getSelectValue="getLimit">
                             </ms-select>
                         </div>
                     </div>
                     <div class="paging-page-range">
-                        Từ &nbsp;<b>{{ from }}</b>&nbsp; đến <b>&nbsp;{{ to }}</b>&nbsp; bản ghi
+                        {{ pageUpdate(toalRecord) }} bản ghi
                     </div>
                     <div class="paging__page-button">
                         <button class="btn--prev" @click="prevPage">
@@ -55,6 +55,26 @@
         <ms-employee-popup v-if="isShowPopup" :formModel="pram" :dataPram="pramData" @closePopup="handlClosePopup">
         </ms-employee-popup>
     </div>
+    <!-- Dialog xóa 1 dòng -->
+    <teleport to="body">
+        <ms-message-box :disabledTop="false" :title="Resource.TitleDialog.DeleteOneEmployee" leftIcon="icon-warning"
+            :valueMessageBox="valueMessageBox" :textMessageBox="Resource.TitleDialogMessage.DeleteOneEmployee.VI"
+            :disabledValueLeft="false" :disabledValueRight="true" v-if="isDialogMessDelete">
+            <ms-button :text="Resource.TitleBtnDialog.Delete.VI" @click="deleteEmployee(item)" radius></ms-button>
+            <ms-button :text="Resource.TitleBtnDialog.NoCancel.VI" type="secodary" @click="isDialogMessDelete = false"
+                radius>
+            </ms-button>
+        </ms-message-box>
+    </teleport>
+
+    <!-- Dialog cancel xóa -->
+    <teleport to="body">
+        <ms-message-box :disabledTop="false" leftIcon="icon-warning" :valueMessageBox="valueMessageBox"
+            :textMessageBox="Resource.TitleDialogMessage.CancelDelete.VI" :disabledValueLeft="false"
+            :disabledValueRight="false" v-if="isDialogMessCancelDelete">
+            <ms-button :text="Resource.TitleBtnDialog.Close.VI" radius></ms-button>
+        </ms-message-box>
+    </teleport>
 </template>
 <script>
 import {
@@ -73,12 +93,15 @@ import MsTr from "./MsTr.vue";
 import Enum from "@/dictionary/enum.js";
 import MsCheckbox from "@/components/ms-control/ms-check-box/MsCheckBox.vue";
 import MsEmployeePopup from "@/views/employee/EmployeePopup.vue";
-// import MsDropdown from "@/components/ms-control/dropdown/MsDropdown.vue";
+import MsButton from "../ms-button/MsButton.vue";
 import MsSelect from "../ms-select-box/MsSelectBox.vue";
+import MsMessageBox from "@/components/dialog/MsMessageBox.vue";
+import Resource from "@/dictionary/resource";
+import axios from 'axios';
 
 export default defineComponent({
     name: "MsGrid",
-    components: { MsTr, MsCheckbox, MsEmployeePopup, MsSelect },
+    components: { MsTr, MsCheckbox, MsEmployeePopup, MsSelect, MsMessageBox, MsButton },
     props: {
         selectedCol: {
             default: false,
@@ -106,53 +129,63 @@ export default defineComponent({
             type: Array,
             default: () => [],
         },
+        search: {
+            type: String,
+            default: "",
+        }
+    },
+    mounted() {
+        this.loadData()
+    },
+    watch: {
+        search() {
+            this.loadData();
+        }
     },
     methods: {
         getLimit(limit) {
             this.page.limit = limit;
+            console.log(limit);
+            this.loadData();
         },
+        loadData() {
+            axios
+                .get(`https://amis.manhnv.net/api/v1/Employees/filter?pageSize=${this.page.limit}&pageNumber=${this.pageNumber}&employeeFilter=${this.search}`)
+                .then(response => {
+                    this.employeeData = response.data?.Data;
+                    this.toalRecord = response.data.TotalRecord;
+                })
+
+        },
+
         nextPage() {
-            if (this.pageNumber == this.maxPage) {
-                this.pageNumber = 1;
-                return;
+            if (Math.ceil(this.toalRecord / this.page.limit) > this.pageNumber) {
+                this.pageNumber++
+                this.loadData();
             }
-            this.pageNumber++;
+
         },
         prevPage() {
-            if (this.pageNumber == 1) {
-                this.pageNumber = this.maxPage;
-                return;
+            if (this.pageNumber > 1) {
+                this.pageNumber--;
+                this.loadData();
+
             }
-            this.pageNumber--;
+
         },
-        pageSize() {
-            this.$emit('pageSizeValue', this.page.limit)
+        pageUpdate(total) {
+            return `${this.page.limit * (this.pageNumber - 1) + 1} - ${this.page.limit * this.pageNumber > total
+                ? total
+                : this.page.limit * this.pageNumber
+                } `;
         }
-    },
-    computed: {
-        displayData() {
-            return this.pagiagte(this.tableName);
-        },
-        from() {
-            var from = this.page.limit * this.pageNumber - this.page.limit + 1;
-            if (this.tableName.length == 0) return 0;
-            if (from < 10 && from > 0) return "0" + from;
-            return from;
-        },
-        to() {
-            var to = this.page.limit * this.pageNumber;
-            if (to > this.tableName.length) to = this.tableName.length;
-            if (to < 10 && to > 0) return "0" + to;
-            return to;
-        },
-        maxPage() {
-            return Math.ceil(this.tableName.length / this.page.limit);
-        },
+
     },
     setup(props, { emit }) {
         const { proxy } = getCurrentInstance();
         const selected = ref([]);
         const isShowPopup = ref(false);
+        const isDialogMessDelete = ref(false);
         window.tables = proxy;
         let pram = reactive({
             mode: 0,
@@ -191,7 +224,18 @@ export default defineComponent({
                 }
             }
         );
-
+        /**
+         * Call api xoá thông tin nhân viên
+         * @param {*} 
+         * author DuongNhung
+         */
+        async function deleteEmployee(id) {
+            axios
+                .delete("https://amis.manhnv.net/api/v1/Employees/" + id)
+                .then(() => {
+                    this.loadData();
+                });
+        }
         /**
         * Xử lý sự kiện double click tr
         *  @author DuongNhung
@@ -225,38 +269,48 @@ export default defineComponent({
             proxy.pram.mode = Enum.Mode.Update;
             proxy.pramData = item;
             proxy.isShowPopup = true;
-            // proxy.dataEmp = item
+        }
+        const handleDeleteData = function (item) {
+            console.log(item);
+            proxy.isDialogMessDelete = true;
         }
 
         onMounted(() => {
-            proxy.eventBus.on("sendDataEmp", handleEmitData)
+            proxy.eventBus.on("sendDataEmp", handleEmitData);
+            proxy.eventBus.on("senDataEmpDelete", handleDeleteData)
         });
         onBeforeUnmount(() => {
-            proxy.eventBus.off("sendDataEmp")
+            proxy.eventBus.off("sendDataEmp");
+            proxy.eventBus.off("senDataEmpDelete")
         });
         return {
             selected,
             dataSelected,
             handleDoubleClick,
+            Resource,
             pram,
             isShowPopup,
             allSelected,
             selectedIndex,
             handleClick,
-            pramData, handlClosePopup
+            pramData,
+            handlClosePopup,
+            isDialogMessDelete,
+            deleteEmployee
 
         };
 
     },
     data() {
         return {
+            toalRecord: 0,
             pageNumber: 1,
             page: {
-                limit: 20,
+                limit: 10,
                 offset: 0,
             },
             pageLimit: [{ value: 10 }, { value: 20 }, { value: 50 }, { value: 100 }],
-            dataEmp: {}
+            employeeData: {},
         };
     },
 

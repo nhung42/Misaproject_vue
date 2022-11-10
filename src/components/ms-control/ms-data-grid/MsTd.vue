@@ -12,7 +12,7 @@
           </button>
         </div>
         <div v-show="isShowOption" class="dlg-option" v-if="this.isShowOption == true" @click="closeOption">
-          <div @click="deleteEmployee" class="option option-delete">Xoá</div>
+          <div @click="handleClickDelete($event, item)" class="option option-delete">Xoá</div>
         </div>
       </div>
 
@@ -109,12 +109,11 @@ export default {
       proxy.isShowOption = true;
     }
     const handleClickUpdate = (e, item) => {
-      // console.log("item:", item)
-      // proxy.pram.mode = Enum.Mode.Update;
-      // proxy.pramData = item;
-      // proxy.isShowPopup = true;
       proxy.eventBus.emit("sendDataEmp", item)
     };
+    const handleClickDelete = (e, item) => {
+      proxy.eventBus.emit("senDataEmpDelete", item)
+    }
     const closeOption = () => {
       proxy.isShowOption = false;
     }
@@ -190,7 +189,8 @@ export default {
       styleAlign,
       handleClickOption,
       handleClickUpdate,
-      closeOption
+      closeOption,
+      handleClickDelete
     };
   },
   data() {
@@ -254,11 +254,11 @@ export default {
 }
 
 .th-inner {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .td-inner {
-  font-size: 13px;
+  font-size: 14px;
   max-width: 248px;
   white-space: nowrap;
   overflow: hidden;
@@ -299,16 +299,14 @@ table tbody td:first-child {
   z-index: 1;
   background-color: #fff;
   width: 50px;
-  padding-left: 3px;
 }
 
 table tbody td:nth-child(2) {
   position: sticky;
-  left: 50px;
+  left: 48px;
   z-index: 1;
   background-color: #fff;
   text-align: left;
-  padding: 0px !important;
 }
 
 table tbody td:nth-child(3) {
@@ -317,7 +315,6 @@ table tbody td:nth-child(3) {
   z-index: 1;
   background-color: #fff;
   text-align: left;
-  padding: 0px !important;
 }
 
 table td:nth-child(4) {
