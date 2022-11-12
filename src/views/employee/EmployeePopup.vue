@@ -54,7 +54,7 @@
                                         rightIcon="combobox__btn" displayField="DepartmentName"
                                         :dataAll="DataDepartment.value" placeholder="Chọn đơn vị"
                                         @item-click="clickDataDepartment" :disabledMessage="errorMessage.departmentName"
-                                        :message="Resource.ErrorInput.DepartmentName">
+                                        :message="Resource.ErrorInput.DepartmentName" @blur="onBlurInput">
                                     </v-drop-down>
                                     <span class="m-input-wrapper__error"></span>
                                 </div>
@@ -174,22 +174,11 @@
             </div>
         </div>
     </teleport>
-
-    <!-- Toast message thêm mới thành công -->
-    <teleport to='body'>
-        <ms-message v-if="isShowMessage" toastAct=" Thêm" @closeOpenToast="closeOpenToast">
-        </ms-message>
-    </teleport>
-    <!-- Toast message update thành công -->
-    <teleport to='body'>
-        <ms-message v-if="isShowMessageUpdate" toastAct=" Sửa">
-        </ms-message>
-    </teleport>
-
     <!-- Dialog messagebox hủy bỏ khai báo -->
     <teleport to="body">
-        <ms-message-box leftIcon="icon-warning" :textMessageBox="Resource.TitleDialogMessage.AddAsset.VI"
-            :disabledValueLeft="false" :disabledValueRight="false" v-if="isDialogMessCancelAdd">
+        <ms-message-box leftIcon="icon-warning" title="Thông báo"
+            :textMessageBox="Resource.TitleDialogMessage.AddAsset.VI" :disabledValueLeft="false"
+            :disabledValueRight="false" v-if="isDialogMessCancelAdd">
             <v-button :text="Resource.TitleBtnDialog.Cancel.VI" radius></v-button>
             <v-button :text="Resource.TitleBtnDialog.NoCancel.VI" type="secodary" @click="isDialogMessCancelAdd = false"
                 radius></v-button>
@@ -198,8 +187,9 @@
 
     <!-- Dialog messagebox cập nhật -->
     <teleport to="body">
-        <ms-message-box leftIcon="icon-warring" :textMessageBox="Resource.TitleDialogMessage.SaveUpdate.VI"
-            :disabledValueLeft="false" :disabledValueRight="false" v-if="isDialogMessUpdate">
+        <ms-message-box leftIcon="icon-warring" title="Thông báo"
+            :textMessageBox="Resource.TitleDialogMessage.SaveUpdate.VI" :disabledValueLeft="false"
+            :disabledValueRight="false" v-if="isDialogMessUpdate">
             <v-button :text="Resource.TitleBtnDialog.Save.VI" radius @click="updateData"></v-button>
             <v-button :text="Resource.TitleBtnDialog.Cancel.VI" type="secodary" radius></v-button>
         </ms-message-box>
@@ -231,7 +221,6 @@ import VInputDate from "@/components/ms-control/ms-date-box/MsDateBox.vue";
 import VDropDown from "@/components/ms-control/dropdown/MsDropdown.vue";
 import VTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
 import MsMessageBox from "@/components/dialog/MsMessageBox.vue";
-import MsMessage from "@/components/dialog/MSToastMessage.vue";
 import Resource from "@/dictionary/resource";
 import ResourceTable from "@/dictionary/resourceTable";
 import Enum from "@/dictionary/enum.js";
@@ -247,7 +236,6 @@ export default {
         VInputDate,
         VTooltip,
         MsMessageBox,
-        MsMessage
     },
     props: {
         configStyle: {
@@ -623,8 +611,7 @@ export default {
                         }
                         //Kiểm tra giá trị mode 
                         case (Enum.Mode.Add): {
-                            // eslint-disable-next-line no-debugger
-                            debugger
+
                             proxy.addEmployee(dataForm.value);
                             break;
                         }

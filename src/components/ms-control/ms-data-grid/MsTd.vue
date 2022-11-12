@@ -1,16 +1,16 @@
 <template>
-  <td :style="styles" class="cls styleAlign" :class="[isClickDelete ? 'z-index-5' : '']">
+  <td :style="styles" class="cls styleAlign" :class="[emp && emp.IsShowDelete ? 'z-index-5' : '']">
     <div class="td-inner" ref="td">
       <div v-if="config.type == ColumnType.Checkbox">
         <ms-checkbox v-model="data"></ms-checkbox>
       </div>
 
       <div v-else-if="config.type == ColumnType.Action">
-        <div class="edit-option">
+        <div class="edit-option" :id="`popover-delete-${emp.EmployeeId}`">
           <div class="text-edit" @click="handleClickUpdate($event, emp)">Sửa</div>
           <button class="icon-combobox-function" @click="handleClickOption">
           </button>
-          <div class="dlg-option" v-show="isShowOption" @click="closeOption">
+          <div class="dlg-option" v-show="isShowOption && emp.IsShowDelete" @click="closeOption">
             <div @click="handleClickDelete($event, emp.EmployeeId)" class="option_function option-delete">Xoá</div>
           </div>
         </div>
@@ -75,7 +75,13 @@ export default {
         let year = date.getFullYear();
         return `${day}/${month}/${year}`;
       }
-    }
+    },
+    checkClickOn(event) {
+      if (this.emp && !document.getElementById(`popover-delete-${this.emp.EmployeeId}`).contains(event.target)) {
+        // eslint-disable-next-line vue/no-mutating-props
+        this.emp.IsShowDelete = false;
+      }
+    },
   },
   setup(props) {
     const { proxy } = getCurrentInstance();
@@ -107,7 +113,7 @@ export default {
     };
 
     const handleClickOption = () => {
-      proxy.isShowOption = !proxy.isShowOption;
+      proxy.isShowOption = true;
       proxy.isClickDelete = !proxy.isClickDelete;
     }
     const handleClickUpdate = (e, item) => {
@@ -117,7 +123,7 @@ export default {
       proxy.eventBus.emit("senDataEmpDelete", item)
     }
     const closeOption = () => {
-      proxy.isShowOption = !proxy.isShowOption;
+      proxy.isShowOption = false;
     }
     const styles = computed(() => {
       let arr = [];
@@ -200,6 +206,9 @@ export default {
     return {
       isShowOption: false,
     };
+  },
+  created() {
+    window.addEventListener("click", this.checkClickOn);
   },
 };
 </script>

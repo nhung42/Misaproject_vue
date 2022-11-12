@@ -24,10 +24,12 @@
         color: #ffffff;
         border-radius: 5px;
         filter: alpha(opacity=80);
+        font-family: Roboto;
         .toast-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            height: 26px;
             .toast-title {
                 color: #1f1f1f;
                 font-size: 20px;
@@ -51,7 +53,7 @@
                 justify-content: center;
                 flex-direction: column;
                 .text-message {
-                    padding-left: 10px;
+                    margin-left: 16px;
                     color: #000;
                     font-size: 14px;
                     padding: 3px 0;

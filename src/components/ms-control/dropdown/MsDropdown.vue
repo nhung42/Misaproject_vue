@@ -122,6 +122,8 @@ export default {
             type: Boolean,
         },
     },
+    methods: {
+    },
     setup(props, { emit }) {
         const { proxy } = getCurrentInstance();
 
@@ -147,7 +149,8 @@ export default {
             watch(
                 () => proxy.dataAll,
                 () => {
-                    search();
+                    disp.value = display.value;
+                    proxy.data = proxy.dataAll;
                 }
             );
         });
@@ -164,7 +167,7 @@ export default {
                 if (val != "") {
                     proxy.autoHeight = true;
                 }
-                disp.value = display.value;
+                // disp.value = display.value;
             }, 100);
         };
 
@@ -275,7 +278,10 @@ export default {
             });
         });
 
-        // const onBlur = (e) => {};
+        const onBlur = (e) => {
+            proxy.forcused = false;
+            emit("blur", proxy.isValue, proxy.valueField, e);
+        };
         const eventListsioner = computed(() => {
             return {
                 click: (e) => {
@@ -286,7 +292,7 @@ export default {
                 blur: (e) => {
                     console.log(e);
                     // proxy.cancelEvent(e);
-                    // proxy.onBlur(e);
+                    proxy.onBlur(e);
                 },
                 focus: (e) => {
                     console.log(e);
@@ -352,6 +358,8 @@ export default {
             data,
             disp, // Gán giá trị
             autoHeight,
+            onBlur,
+
         };
     },
 };

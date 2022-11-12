@@ -19,9 +19,20 @@
                 <div class="icon-reload margin-left-10px" @click="loadData"></div>
             </ms-tooltip>
         </div>
-        <ms-grid :columns="columns" :selectedCol="true" v-model="dataSelected" :search="search" @loadData="loadData">
+        <ms-grid :columns="columns" :selectedCol="true" v-model="dataSelected" :search="search" :reloadData="reload">
         </ms-grid>
     </div>
+    <!-- Toast message thêm mới thành công -->
+    <teleport to='body'>
+        <ms-message v-if="isShowMessage" toastAct=" Thêm" @closeOpenToast="closeOpenToast">
+        </ms-message>
+    </teleport>
+    <!-- Toast message update thành công -->
+    <teleport to='body'>
+        <ms-message v-if="isShowMessageUpdate" toastAct=" Sửa">
+        </ms-message>
+    </teleport>
+
 </template>
 
 <script>
@@ -31,6 +42,7 @@ import MsInput from "@/components/ms-control/ms-text-box/MsTextBox.vue";
 import MsTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
 import Enum from "@/dictionary/enum.js";
 import MsPopupEmployee from "@/views/employee/EmployeePopup.vue";
+import MsMessage from "@/components/dialog/MSToastMessage.vue";
 import {
     getCurrentInstance,
     reactive,
@@ -44,6 +56,7 @@ export default {
         MsGrid,
         MsTooltip,
         MsPopupEmployee,
+        MsMessage
     },
     methods: {
         close() {
@@ -59,6 +72,9 @@ export default {
         const allData = ref([]);
         const Loading = ref(true);
         const dataSelected = ref([]);
+        const reload = ref(false);
+        const isShowMessage = ref(false);
+        const isShowMessageUpdate = ref(false);
 
         let pram = reactive({
             mode: 0,
@@ -80,15 +96,11 @@ export default {
         const handlClosePopup = () => {
             proxy.isShowPopup = false;
         };
-        const clickMenu = async (action, val) => {
-            switch (action) {
-                case 0: {
-                    proxy.pram.mode = Enum.Mode.Update;
-                    proxy.pram.employeeId = val;
-                    proxy.isShowPopup = true;
-                    break;
-                }
-            }
+        /**
+         * set giá trị hàm loadData gọi từ data grid
+         */
+        const loadData = () => {
+            proxy.reload = !proxy.reload;
         };
         const columns = ref([
             {
@@ -176,24 +188,19 @@ export default {
             dataSelected,
             isLoading,
             Loading,
-            clickMenu,
+            isShowMessage,
+            isShowMessageUpdate,
             handlClosePopup,
             pram,
-            // loadData,
+            loadData,
             handleClickAdd,
+            reload
         };
     },
-
-    loadData(data) {
-        this.reloadData = data
-    },
-
-
     data() {
         return {
             isShowPopup: false,
             search: "",
-            reloadData: null
         };
     },
 };

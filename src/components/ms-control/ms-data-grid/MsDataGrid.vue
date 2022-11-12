@@ -57,10 +57,10 @@
     </div>
     <!-- Dialog xóa 1 dòng -->
     <teleport to="body">
-        <ms-message-box :disabledTop="false" :title="Resource.TitleDialog.DeleteOneEmployee" leftIcon="icon-warning"
+        <ms-message-box :disabledTop="false" :title="Resource.TitleDialog.DeleteOneEmployee" leftIcon="icon-warring"
             :valueMessageBox="valueMessageBox" :textMessageBox="Resource.TitleDialogMessage.DeleteOneEmployee.VI"
             :disabledValueLeft="false" :disabledValueRight="true" v-if="isDialogMessDelete">
-            <ms-button :text="Resource.TitleBtnDialog.Delete.VI" @click="handleDeleteData(id)" radius></ms-button>
+            <ms-button :text="Resource.TitleBtnDialog.Delete.VI" @click="deleteEmployee(employeeId)" radius></ms-button>
             <ms-button :text="Resource.TitleBtnDialog.NoCancel.VI" type="secodary" @click="isDialogMessDelete = false"
                 radius>
             </ms-button>
@@ -69,7 +69,7 @@
 
     <!-- Dialog cancel xóa -->
     <teleport to="body">
-        <ms-message-box :disabledTop="false" leftIcon="icon-warning" :valueMessageBox="valueMessageBox"
+        <ms-message-box :disabledTop="false" leftIcon="icon-warring" :valueMessageBox="valueMessageBox"
             :textMessageBox="Resource.TitleDialogMessage.CancelDelete.VI" :disabledValueLeft="false"
             :disabledValueRight="false" v-if="isDialogMessCancelDelete">
             <ms-button :text="Resource.TitleBtnDialog.Close.VI" radius></ms-button>
@@ -132,6 +132,10 @@ export default defineComponent({
         search: {
             type: String,
             default: "",
+        },
+        reloadData: {
+            type: Boolean,
+            default: false,
         }
     },
     mounted() {
@@ -139,6 +143,11 @@ export default defineComponent({
     },
     watch: {
         search() {
+            this.pageNumber = 1;
+            this.loadData();
+        },
+        reloadData() {
+            this.pageNumber = 1;
             this.loadData();
         }
     },
@@ -152,6 +161,10 @@ export default defineComponent({
                 .get(`https://amis.manhnv.net/api/v1/Employees/filter?pageSize=${this.page.limit}&pageNumber=${this.pageNumber}&employeeFilter=${this.search}`)
                 .then(response => {
                     this.employeeData = response.data?.Data;
+                    this.employeeData = this.employeeData.map(x => {
+                        x.IsShowDelete = false;
+                        return x;
+                    })
                     this.toalRecord = response.data.TotalRecord;
                 })
         },
@@ -182,6 +195,7 @@ export default defineComponent({
         const isShowPopup = ref(false);
         const isDialogMessDelete = ref(false);
         const isDialogMessCancelDelete = ref(false);
+        const employeeId = ref("");
         window.tables = proxy;
         let pram = reactive({
             mode: 0,
@@ -193,7 +207,7 @@ export default defineComponent({
         // Lấy ra những vị trí checked
         const selectedIndex = ref([]);
         const dataSelected = computed(() =>
-            selectedIndex.value.map((x, i) => x && proxy.allData[i].EmployeeId).filter((x) => x)
+            selectedIndex.value.map((x, i) => x && proxy.allData[i] && proxy.allData[i].EmployeeId).filter((x) => x)
         );
         // Cập nhật dataSelected vào selectedData
         onMounted(() => {
@@ -220,19 +234,27 @@ export default defineComponent({
             }
         );
         /**
-         * Call api xoá thông tin nhân viên
-         * @param {*} 
-         * author DuongNhung
+         * Hàm xử lí gọi dialog cảnh báo xoá
+         * @param {*} id 
          */
-
         const handleDeleteData = function (id) {
             console.log(id);
-            axios
-                .delete(`https://amis.manhnv.net/api/v1/Employees/${id}`)
-                .then(() => {
-                    this.loadData();
-                });
+            proxy.employeeId = id;
+            proxy.isDialogMessDelete = true;
         }
+        /**
+       * Call api xoá thông tin nhân viên
+       * @param {*} 
+       * author DuongNhung
+       */
+        const deleteEmployee = (employeeId) => {
+            axios
+                .delete(`https://amis.manhnv.net/api/v1/Employees/${employeeId}`)
+                .then(() => {
+                    proxy.isDialogMessDelete = !proxy.isDialogMessDelete;
+                    proxy.loadData();
+                });
+        };
         /**
         * Xử lý sự kiện double click tr
         *  @author DuongNhung
@@ -256,6 +278,15 @@ export default defineComponent({
         *  @author DuongNhung
         */
         const handleClick = (index) => {
+            proxy.employeeData = proxy.employeeData.map((x, a) => {
+                if (a == index) {
+                    x.IsShowDelete = !x.IsShowDelete;
+                }
+                else {
+                    x.IsShowDelete = false;
+                }
+                return x;
+            })
             if (proxy.selectedIndex[index]) {
                 proxy.selectedIndex[index] = false;
             } else {
@@ -292,6 +323,8 @@ export default defineComponent({
             handlClosePopup,
             isDialogMessDelete,
             isDialogMessCancelDelete,
+            deleteEmployee,
+            employeeId,
 
         };
 

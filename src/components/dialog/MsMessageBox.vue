@@ -97,5 +97,5 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "/Misa_Project/amis-sme-ui/src/style/components/MsMessageBox.scss";
+@import "@/style/components/MsMessageBox.scss";
 </style>
