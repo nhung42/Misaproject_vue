@@ -1,42 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 .ms-content {
-  display: block;
-  background-color: rgb(236, 238, 241);
-  max-width: 100% !important;
-  height: calc(100vh - 92px);
-  position: relative;
-  margin: 24px 12px 12px 24px;
+    display: block;
+    background-color: rgb(236, 238, 241);
+    max-width: 100% !important;
+    height: calc(100vh - 92px);
+    position: relative;
+    margin: 24px 12px 12px 24px;
 }
 .header__content {
-  height: 56px;
-  display: flex;
-  position: relative;
-  align-items: center;
+    height: 56px;
+    display: flex;
+    position: relative;
+    align-items: center;
 }
 .contrainer-toolbar {
-  height: 56px;
-  display: flex;
-  justify-content: space-between;
+    height: 56px;
+    display: flex;
+    justify-content: space-between;
 }
 .input_search {
-  width: 350px;
-  margin-right: 16px;
+    width: 350px;
+    margin-right: 16px;
 }
 .page-title {
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 36px;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 36px;
 }
 .page__toolbar {
-  height: 56px;
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-  background-color: #fff;
-  padding-right: 24px;
+    height: 56px;
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+    background-color: #fff;
+    padding-right: 24px;
 }
 .page__table {
-  padding: 16px;
-  padding-top: unset;
-  background-color: #fff;
-  height: calc(100vh - 282px);
+    padding: 16px;
+    padding-top: unset;
+    background-color: #fff;
+    height: calc(100vh - 282px);
 }

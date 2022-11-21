@@ -22,16 +22,6 @@
         <ms-grid :columns="columns" :selectedCol="true" v-model="dataSelected" :search="search" :reloadData="reload">
         </ms-grid>
     </div>
-    <!-- Toast message thêm mới thành công -->
-    <teleport to='body'>
-        <ms-message v-if="isShowMessage" toastAct=" Thêm" @closeOpenToast="closeOpenToast">
-        </ms-message>
-    </teleport>
-    <!-- Toast message update thành công -->
-    <teleport to='body'>
-        <ms-message v-if="isShowMessageUpdate" toastAct=" Sửa">
-        </ms-message>
-    </teleport>
 
 </template>
 
@@ -42,7 +32,6 @@ import MsInput from "@/components/ms-control/ms-text-box/MsTextBox.vue";
 import MsTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
 import Enum from "@/dictionary/enum.js";
 import MsPopupEmployee from "@/views/employee/EmployeePopup.vue";
-import MsMessage from "@/components/dialog/MSToastMessage.vue";
 import {
     getCurrentInstance,
     reactive,
@@ -56,7 +45,6 @@ export default {
         MsGrid,
         MsTooltip,
         MsPopupEmployee,
-        MsMessage
     },
     methods: {
         close() {
@@ -73,8 +61,6 @@ export default {
         const Loading = ref(true);
         const dataSelected = ref([]);
         const reload = ref(false);
-        const isShowMessage = ref(false);
-        const isShowMessageUpdate = ref(false);
 
         let pram = reactive({
             mode: 0,
@@ -101,6 +87,15 @@ export default {
          */
         const loadData = () => {
             proxy.reload = !proxy.reload;
+        };
+
+        const showToastMessage = () => {
+            if (proxy.pram.mode == 1) {
+                proxy.isShowMessage = true;
+            }
+            if (proxy.pram.mode == 2) {
+                proxy.isShowMessageUpdate = true;
+            }
         };
         const columns = ref([
             {
@@ -188,13 +183,12 @@ export default {
             dataSelected,
             isLoading,
             Loading,
-            isShowMessage,
-            isShowMessageUpdate,
             handlClosePopup,
             pram,
             loadData,
             handleClickAdd,
-            reload
+            reload,
+            showToastMessage
         };
     },
     data() {

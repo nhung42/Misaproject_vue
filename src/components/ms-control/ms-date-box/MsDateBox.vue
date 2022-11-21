@@ -41,7 +41,9 @@ export default defineComponent({
                 proxy.dateValue = newVal;
             }
         );
-
+        /**
+         * Hàm thay đổi giá trị date cđược chọn
+         */
         const changeValue = function () {
             proxy.$emit("update:modelValue", proxy.dateValue);
             nextTick(() => {

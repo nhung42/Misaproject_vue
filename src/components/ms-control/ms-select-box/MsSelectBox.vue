@@ -50,11 +50,19 @@ export default {
         };
     },
     methods: {
+        /**
+         * Nhận giá trị được chọn
+         * @param {*} value 
+         * @author DuongNhung
+         */
         selectItem(value) {
             this.selectedItem = value;
             this.isShow = false;
             this.$emit("getSelectValue", value);
         },
+        /** 
+         * Đóng option
+        */
         checkClickOn(event) {
             if (!document.getElementById(this.id).contains(event.target)) {
                 this.isShow = false;

@@ -1,6 +1,6 @@
 <template>
     <div class="input-field" :class="disabledMessage ? 'mg-9' : false">
-        <label class="text-label" v-if="hasLabel" for="input__text">
+        <label class="text-label" v-if="hasLabel" for="input__text" :title="title">
             {{ label ? label : "" }}
             <span v-if="hasInput">&#8727;</span>
         </label>
@@ -111,6 +111,10 @@ export default defineComponent({
             default: null,
             type: [Number, String],
         },
+        title: {
+            default: null,
+            type: String
+        }
 
     },
     setup(props, { emit }) {
@@ -136,11 +140,20 @@ export default defineComponent({
                 }
             }
         };
-
+        /**
+         * Hàm xử lí nhận giá trị khi focus
+         * @param {*} e 
+         * @author DuongNhung
+         */
         const onFocus = (e) => {
             proxy.forcused = true;
             emit("focus", proxy.isValue, proxy.valueField, e);
         };
+        /**
+        * Hàm xử lí nhận giá trị khi blur
+        * @param {*} e 
+        * @author DuongNhung
+        */
         const onBlur = (e) => {
             proxy.forcused = false;
             emit("blur", proxy.isValue, proxy.valueField, e);
@@ -174,6 +187,11 @@ export default defineComponent({
                 proxy.isValue = newVal;
             }
         );
+        /**
+        * Hàm xử lí nhận giá trị thay đổi
+        * @param {*} e 
+        * @author DuongNhung
+        */
         const changeValue = function (e) {
             console.log(e);
             proxy.$emit("update:modelValue", proxy.isValue);

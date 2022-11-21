@@ -21,7 +21,9 @@
                         </div>
                     </div>
                     <button class="dialog__button display-flex">
-                        <div class="icon-help" title="Giúp (F1)"></div>
+                        <v-tooltip content="Giúp(F1)" placement="bottom" right="bottom">
+                            <div class="icon-help"></div>
+                        </v-tooltip>
                         <v-tooltip content="Đóng(ESC)" placement="bottom" right="bottom">
                             <div class="icon-close" @click="handlePopupClose"></div>
                         </v-tooltip>
@@ -54,7 +56,8 @@
                                         rightIcon="combobox__btn" displayField="DepartmentName"
                                         :dataAll="DataDepartment.value" placeholder="Chọn đơn vị"
                                         @item-click="clickDataDepartment" :disabledMessage="errorMessage.departmentName"
-                                        :message="Resource.ErrorInput.DepartmentName" @blur="onBlurInput">
+                                        :message="Resource.ErrorInput.DepartmentName" @focusout="onBlurDropdown"
+                                        @focus="changeValueInput">
                                     </v-drop-down>
                                     <span class="m-input-wrapper__error"></span>
                                 </div>
@@ -92,8 +95,8 @@
                             <div class="m-row display-flex">
                                 <div class="input-wrapper">
                                     <v-input label="Số CMND" tabindex="9" hasLabel valueField="IdentityNumber"
-                                        v-model="dataForm.IdentityNumber" :radius="false" placeholder="CMND"
-                                        @blur="onBlurInput" @focus="changeValueInput"></v-input>
+                                        title="Số Chứng Minh Nhân Dân" v-model="dataForm.IdentityNumber" :radius="false"
+                                        placeholder="CMND" @blur="onBlurInput" @focus="changeValueInput"></v-input>
                                 </div>
                                 <div class="input-wrapper margin-left-10px">
                                     <v-input-date label="Ngày cấp" hasLabel tabindex="10" valueField="IdentityDate"
@@ -120,13 +123,13 @@
                             <div class="m-row display-flex">
                                 <div class="input-wrapper">
                                     <v-input label="ĐT di động" tabindex="13" hasLabel valueField="PhoneNumber"
-                                        v-model="dataForm.PhoneNumber" :radius="false" placeholder=""
-                                        @blur="onBlurInput" @focus="changeValueInput"></v-input>
+                                        title="Số Điện Thoại Di Động" v-model="dataForm.PhoneNumber" :radius="false"
+                                        placeholder="" @blur="onBlurInput" @focus="changeValueInput"></v-input>
                                 </div>
                                 <div class="input-wrapper margin-left-10px">
                                     <v-input label="ĐT cố định" tabindex="14" hasLabel valueField="Phone"
-                                        v-model="dataForm.Phone" :radius="false" placeholder="" @blur="onBlurInput"
-                                        @focus="onBlurInput"></v-input>
+                                        title="Số Điện Thoại Cố Định" v-model="dataForm.Phone" :radius="false"
+                                        placeholder="" @blur="onBlurInput" @focus="onBlurInput"></v-input>
                                 </div>
                                 <div class="input-wrapper margin-left-10px">
                                     <v-input label="Email" tabindex="15" hasLabel valueField="Email"
@@ -202,6 +205,23 @@
             <v-button :text="Resource.TitleBtnDialog.Close.VI" radius @click="handleCloseErrorMultiple"></v-button>
         </ms-message-box>
     </teleport>
+    <!-- Dialog thông báo lỗi khi call api-->
+    <teleport to="body">
+        <ms-message-box leftIcon="icon-error" :textMessageBox="error" :disabledValueLeft="false"
+            :disabledValueRight="false" v-if="isDialogError">
+            <v-button :text="Resource.TitleBtnDialog.Close.VI" @click="isDialogError = false" radius></v-button>
+        </ms-message-box>
+    </teleport>
+    <!-- Toast message thêm mới thành công -->
+    <teleport to='body'>
+        <ms-message v-if="isShowMessage" toastAct=" Thêm" @closeOpenToast="closeOpenToast">
+        </ms-message>
+    </teleport>
+    <!-- Toast message update thành công -->
+    <teleport to='body'>
+        <ms-message v-if="isShowMessageUpdate" toastAct=" Sửa">
+        </ms-message>
+    </teleport>
 </template>
 <script>
 import {
@@ -225,6 +245,7 @@ import Resource from "@/dictionary/resource";
 import ResourceTable from "@/dictionary/resourceTable";
 import Enum from "@/dictionary/enum.js";
 import axios from "axios";
+import MsMessage from "@/components/dialog/MSToastMessage.vue";
 
 
 export default {
@@ -236,6 +257,7 @@ export default {
         VInputDate,
         VTooltip,
         MsMessageBox,
+        MsMessage,
     },
     props: {
         configStyle: {
@@ -258,28 +280,40 @@ export default {
         close() {
             this.$parent.close();
         },
+        /**
+         * Hàm đóng toast message
+         * author Duong Nhung
+         */
         closeOpenToast() {
             this.isShowMessage = !this.isShowMessage
+            this.$emit('closePopup');
         }
     },
     emits: ["closePopup"],
     setup(props, { emit }) {
         const { proxy } = getCurrentInstance();
-        //Show toastMessage
         window.popup = proxy;
+        //Show message khi thêm mới thành công
         const isShowMessage = ref(false);
+        //Show popup
         const isShowPopup = ref(false);
+        //Message cancel Add
         const isDialogMessCancelAdd = ref(false);
+        //Message update thành công 
         const isShowMessageUpdate = ref(false);
-
+        //Dialog message lỗi
+        const isDialogError = ref(false);
+        //Message lỗi khi validate
         const errorMessage = ref({});
         //Show dialog cập nhật
         const isDialogMessUpdate = ref(false);
-
+        //Nội dung lỗi khi validate
         const titleErrValidate = ref([]);
-
+        //Dialog hiển thị lỗi
         const isShowDialogDetail = ref(false);
+        //State submit
         const isSubmited = ref(false);
+        //Dữ liệu form
         const dataForm = ref({
             Mode: 0,
             EmployeeCode: "",
@@ -314,11 +348,14 @@ export default {
                 DepartmentId: { required },
             };
         });
+        //Gọi hàm validate cho dataForm
         const v$ = useVuelidate(dataFormValidate, dataForm);
+        //Dữ liệu của đơn vị
         const DataDepartment = ref([]);
-
+        //title popup
         const title = ref("");
-
+        //Lỗi
+        const error = ref("");
 
         /**
          * Lấy dữ liệu toàn bộ đơn vị
@@ -332,6 +369,11 @@ export default {
                         let data = response.data || []; //?.Data;
                         proxy.DataDepartment.value = data;
                     })
+                    .catch(function (error) {
+                        proxy.error = error.response.data.devMsg;
+                        proxy.isDialogError = true;
+
+                    });
             } catch (error) {
                 console.log(error);
             }
@@ -339,19 +381,27 @@ export default {
         /**
          * Call api thêm mới thông tin employee
          * @param {*} obj 
+         * author DuongNhung
          */
         async function addEmployee(obj) {
-            axios
-                .post("https://amis.manhnv.net/api/v1/Employees", obj)
-                .then((res) => {
-                    console.log("post:", res.data);
-                    proxy.isShowMessage = true;
-                    this.$emit('closePopup')
-                })
-                .catch(function (error) {
-                    console.log("error:", error.response.data);
+            try {
+                axios
+                    .post("https://amis.manhnv.net/api/v1/Employees", obj)
+                    .then((res) => {
+                        console.log("post:", res.data);
+                        // eslint-disable-next-line no-debugger
+                        debugger
+                        proxy.isShowMessage = true;
+                    })
+                    .catch(function (error) {
+                        proxy.error = error.response.data.devMsg;
+                        proxy.isDialogError = true;
 
-                });
+                    });
+            }
+            catch (error) {
+                console.log(error);
+            }
         }
         /**
          * Call api update thông tin nhân viên
@@ -359,17 +409,27 @@ export default {
          * author DuongNhung
          */
         async function updateEmployee(obj) {
-            axios
-                .put("https://amis.manhnv.net/api/v1/Employees/" + obj.EmployeeId, obj)
-                .then((res) => {
-                    console.log("post:", res.data);
-                    proxy.isShowMessageUpdate = true;
-                })
-                .catch(function (error) {
-                    console.log("error:", error.response.data);
+            try {
+                axios
+                    .put("https://amis.manhnv.net/api/v1/Employees/" + obj.EmployeeId, obj)
+                    .then((res) => {
+                        console.log("post:", res.data);
+                        proxy.isShowMessageUpdate = true;
+                    })
+                    .catch(function (error) {
+                        proxy.error = error.response.data.devMsg;
+                        proxy.isDialogError = true;
 
-                });
+                    });
+            }
+            catch (error) {
+                console.log(error);
+            }
         }
+        /**
+         * Hàm lấy giá trị chon radio gender
+         * @author DuongNhung
+         */
         const getGender = () => {
             if (proxy.dataForm.GenderName == 'Nam') {
                 proxy.dataForm.Gender = 1;
@@ -383,6 +443,7 @@ export default {
         }
         /**
          * Sửa thông thin nhân viên,load lại data
+         * @author DuongNhung
          */
         const updateData = () => {
             proxy.isDialogMessUpdate = false;
@@ -390,7 +451,7 @@ export default {
             proxy.isShowPopup = false;
 
         }
-        //Sự kiện close error message Multiple
+        //Sự kiện close error message Multiple Error
         const handleCloseErrorMultiple = () => {
             proxy.isShowDialogDetail = false;
             proxy.isSubmited = true;
@@ -399,17 +460,21 @@ export default {
         watchEffect(
             () => dataForm.value,
         );
+        //Focus ô input đầu tiên
         onMounted(() => {
             proxy.focusInput();
         });
-
+        /**
+         * Focus ô input đầu tiên của form
+         * @author DuongNhung
+         */
         const focusInput = () => {
             proxy.$refs.inputemployeeCode.$el.getElementsByTagName("input")[0].focus();
         };
         onMounted(() => {
             try {
                 /**
-                 * Kiểm tra giá trị mode là add hay cập nhật
+                 * Kiểm tra giá trị mode là add hay cập nhật hoặc nhân bản
                  *  @author DuongNhung
                  */
                 switch (proxy.formModel.mode) {
@@ -427,13 +492,23 @@ export default {
                         proxy.dataForm.Mode = 1;
                         break;
 
+                    //Kiểm tra giá trị mode là nhân bản
+                    case Enum.Mode.Duplicate:
+                        proxy.title = Resource.TitleFormPopup.FormAddEmployee.VI;
+                        // Lấy dữ liệu nhân viên theo id nhân viên
+                        proxy.dataForm = proxy.dataPram;
+                        proxy.dataForm.Mode = 3;
+                        break;
+
                 }
             } catch (error) {
                 console.log(error);
             }
         });
         onMounted(() => {
+            //Gọi hàm lấy data đơn vị
             proxy.loadDataDepartment();
+            //Gọi hmaf lấy giá trị gender
             proxy.getGender();
         });
 
@@ -466,6 +541,34 @@ export default {
             proxy.dataForm.DepartmentCode = item.DepartmentCode;
             proxy.dataForm.DepartmentName = item.DepartmentName;
         };
+        /**
+         * Hàm gán giá trị của input dropdown khi blur ra khỏi ô input
+         * @param {*} disp 
+         * @param {*} valueField 
+         * @author DuongNhung
+         */
+        const onBlurDropdown = (disp, valueField) => {
+
+            switch (valueField) {
+                case "DepartmentName":
+
+                    if (disp === null) {
+                        proxy.errorMessage.departmentName = true;
+                    } else {
+                        proxy.errorMessage.departmentName = false;
+                        proxy.dataForm.DepartmentName = disp;
+                    }
+                    break;
+            }
+
+
+        }
+        /**
+         * Hàm gán giá trị của input khi blur ra khỏi ô input
+         * @param {*} disp 
+         * @param {*} valueField 
+         * @author DuongNhung
+         */
         const onBlurInput = (isValue, valueField) => {
             switch (valueField) {
 
@@ -484,16 +587,6 @@ export default {
                         proxy.dataForm.EmployeeCode = isValue;
                     } else {
                         proxy.errorMessage.employeeCode = true;
-                    }
-
-                    break;
-                }
-                case "DepartmentName": {
-                    if (isValue != "") {
-                        proxy.errorMessage.departmentName = false;
-                        proxy.dataForm.DepartmentName = isValue;
-                    } else {
-                        proxy.errorMessage.departmentName = true;
                     }
 
                     break;
@@ -577,7 +670,10 @@ export default {
                 }
             }
         };
-        // Validate dữ liệu
+        /**
+         * Hàm validate dữ liệu
+         * @author DuongNhung
+        */
         const validateData = () => {
             proxy.v$.$validate();
             if (proxy.v$.$error) {
@@ -598,6 +694,10 @@ export default {
                 }
             }
         };
+        /**
+         * Save Data
+         * @author DuongNhung
+         */
         const saveData = () => {
             try {
                 if (proxy.validateData() == false) {
@@ -615,6 +715,13 @@ export default {
                             proxy.addEmployee(dataForm.value);
                             break;
                         }
+
+                        //Kiểm tra giá trị mode là nhân bản 
+                        case (Enum.Mode.Duplicate): {
+
+                            proxy.addEmployee(dataForm.value);
+                            break;
+                        }
                         default:
                             break;
                     }
@@ -623,6 +730,10 @@ export default {
                 console.error(error);
             }
         };
+        /**
+         * Hàm đóng popup
+         * @author DuongNhung
+         */
         const handlePopupClose = () => {
             let closes = proxy.validateData();
             if (closes == true) {
@@ -637,6 +748,7 @@ export default {
         return {
             styles,
             title,
+            error,
             isShowPopup,
             isShowMessage,
             titleErrValidate,
@@ -647,6 +759,7 @@ export default {
             ResourceTable,
             DataDepartment,
             isShowDialogDetail,
+            isDialogError,
             loadDataDepartment,
             clickDataDepartment,
             updateData,
@@ -660,6 +773,7 @@ export default {
             handlePopupClose,
             errorMessage,
             validateData,
+            onBlurDropdown,
             onBlurInput,
             dataFormValidate,
             handleCloseErrorMultiple,
@@ -675,7 +789,13 @@ input[type="radio"] {
     background-color: #fff;
 }
 
+.radio__title {
+    font-family: Roboto;
+    font-size: 14px;
+}
+
 @import "@/style/layout/EmployeePopup.scss";
 @import "@/style/components/MsInputDate.scss";
+@import "@/style/components/MsCheckbox.scss"
 </style>
   

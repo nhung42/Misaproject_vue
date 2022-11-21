@@ -56,7 +56,8 @@ export default {
         margin-right: 10px;
         margin-left: 8px;
         font-weight: 600;
-        font-size: 18px;
+        font-size: 16px;
+        white-space: nowrap;
     }
 
     .profile {
@@ -71,6 +72,7 @@ export default {
         line-height: 36px;
         opacity: 0.7;
         margin-right: 8px;
+        white-space: nowrap;
     }
 }
 </style>

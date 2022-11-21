@@ -12,6 +12,7 @@
           </button>
           <div class="dlg-option" v-show="isShowOption && emp.IsShowDelete" @click="closeOption">
             <div @click="handleClickDelete($event, emp.EmployeeId)" class="option_function option-delete">Xoá</div>
+            <div @click="handleClickDuplicate($event, emp)" class="option_function option-duplicate">Nhân bản</div>
           </div>
         </div>
       </div>
@@ -65,6 +66,11 @@ export default {
 
   },
   methods: {
+    /**
+     * FormatDate về DD/MM/YYYY
+     * @param {} dob 
+     * @author DuongNhung
+     */
     formatDate(dob) {
       if (dob) {
         let date = new Date(dob);
@@ -76,6 +82,11 @@ export default {
         return `${day}/${month}/${year}`;
       }
     },
+    /**
+     * Đóng các option chức năng 
+     * @param {} event 
+     * @author DuongNhung
+     */
     checkClickOn(event) {
       if (this.emp && !document.getElementById(`popover-delete-${this.emp.EmployeeId}`).contains(event.target)) {
         // eslint-disable-next-line vue/no-mutating-props
@@ -112,16 +123,40 @@ export default {
       } else return "";
     };
 
+    /**
+     * Hàm đóng mở menu function
+     */
     const handleClickOption = () => {
       proxy.isShowOption = true;
       proxy.isClickDelete = !proxy.isClickDelete;
     }
+    /**
+     * Gửi data của update
+     * @param {*} e 
+     * @param {*} item 
+     */
     const handleClickUpdate = (e, item) => {
       proxy.eventBus.emit("sendDataEmp", item)
     };
+    /**
+   * Gửi data của nhân bản
+   * @param {*} e 
+   * @param {*} item 
+   */
+    const handleClickDuplicate = (e, item) => {
+      proxy.eventBus.emit("sendDataDuplicateEmp", item)
+    };
+    /**
+     * Gửi data của delete lên grid
+     * @param {*} e 
+     * @param {*} item 
+     */
     const handleClickDelete = (e, item) => {
       proxy.eventBus.emit("senDataEmpDelete", item)
     }
+    /**
+     * Đóng mở option
+     */
     const closeOption = () => {
       proxy.isShowOption = false;
     }
@@ -197,6 +232,7 @@ export default {
       styleAlign,
       handleClickOption,
       handleClickUpdate,
+      handleClickDuplicate,
       closeOption,
       handleClickDelete,
       isClickDelete
@@ -252,7 +288,6 @@ export default {
   z-index: 5;
   background-color: white;
   position: absolute;
-  border: 1px solid #babec5;
   top: 25px;
   right: 16px;
 
@@ -260,6 +295,7 @@ export default {
   .option_function {
     cursor: pointer;
     padding: 5px 10px;
+    border: 1px solid #babec5;
   }
 
   .option:hover {
@@ -329,6 +365,7 @@ table tbody td:nth-child(2) {
   z-index: 1;
   background-color: #fff;
   text-align: left;
+  padding-right: 16px;
 }
 
 table tbody td:nth-child(3) {
@@ -337,11 +374,12 @@ table tbody td:nth-child(3) {
   z-index: 1;
   background-color: #fff;
   text-align: left;
-
+  padding-right: 16px;
 }
 
 table td:nth-child(4) {
   width: 40px;
+  padding-right: 16px;
 }
 
 table tbody td:last-child {

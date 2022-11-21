@@ -45,7 +45,9 @@ export default {
 
         window.tr = proxy;
         const select = ref(props.selected);
-
+        /**
+         * Khai báo đối tượng checkbox
+         */
         const configSelect = reactive({
             field: "selected",
             title: "checkbox",

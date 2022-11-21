@@ -7,7 +7,7 @@
         <div class="combobox">
             <button class="dropdown-menu-toggle" ref="dropdown" :class="disabledMessage ? 'error__message' : ''">
                 <input type="text" v-model="disp" :tabindex="tabindex" ref="input" :placeholder="placeholder"
-                    v-on="eventListsioner" @keyup="search" @click="isShowMenu = true" />
+                    v-on="eventListsioner" @keyup="search" @focus="isShowMenu = true" />
                 <div :class="[
                     'app-icon',
                     rightIcon,
@@ -52,6 +52,7 @@ export default {
         DropdownItem,
     },
     props: {
+        //Id 
         id: {
             default: null,
             type: String,
@@ -63,41 +64,51 @@ export default {
             default: null,
             type: String,
         },
+        //Icon trái
         leftIcon: {
             default: null,
             type: String,
         },
+        //Data dropdown
         dataAll: {
             default: [],
         },
+        //Icon phải
         rightIcon: {
             default: null,
             type: String,
         },
+        //Không được active
         disabled: {
             default: false,
             type: Boolean,
         },
+        //placeholder
         placeholder: {
             default: null,
             type: [Number, String],
         },
+        //Giá trị của dropdown
         valueField: {
             default: null,
             type: String,
         },
+        //Giá trị hiển thị của dropdown
         displayField: {
             default: null,
             type: String,
         },
+        //Label dropdown
         label: {
             default: null,
             type: String,
         },
+        //có được nhập hay không
         hasInput: {
             default: false,
             type: Boolean,
         },
+        //Có label không
         hasLabel: {
             default: false,
             type: Boolean,
@@ -126,10 +137,11 @@ export default {
     },
     setup(props, { emit }) {
         const { proxy } = getCurrentInstance();
-
+        //gán data dropdown
         const data = ref(props.dataAll);
         const disp = ref("");
         const autoHeight = ref(false);
+        const forcused = ref(false);
 
         window.cb = proxy;
 
@@ -155,7 +167,11 @@ export default {
             );
         });
 
-        //Tìm kiếm dữ liệu trong dropdown
+        /**
+         * Tìm kiếm dữ liệu trong dropdown
+         * @param {} e 
+         * @author DuongNhung
+         */
         const search = function (e) {
             console.log(e);
             setTimeout(() => {
@@ -170,15 +186,16 @@ export default {
                 // disp.value = display.value;
             }, 100);
         };
-
+        //Giá trị hiển thị là giá trị được chọn
         const display = computed(
             () => proxy.selected && proxy.selected[proxy.displayField]
         );
-
+        //Style vị trí cho dropdown
         const offsetPosi = reactive({
             top: 0,
             left: 0,
         });
+        //Style vị trí cho dropdown
         const offsetDropdown = reactive({
             width: 0,
             height: 0,
@@ -277,27 +294,39 @@ export default {
                 }
             });
         });
-
-        const onBlur = (e) => {
+        /**
+         * Hàm xử lí nhận giá trị khi focus
+         * @param {*} e 
+         * @author DuongNhung
+         */
+        const onFocus = (e) => {
+            proxy.forcused = true;
+            emit("focus", proxy.disp, proxy.valueField, e);
+        };
+        /**
+         * Hàm xử lí nhận giá trị khi out focus
+         * @param {*} e 
+         * @author DuongNhung
+         */
+        const onFocusOut = (e) => {
             proxy.forcused = false;
-            emit("blur", proxy.isValue, proxy.valueField, e);
+            emit("focusout", proxy.disp, proxy.valueField, e);
         };
         const eventListsioner = computed(() => {
             return {
                 click: (e) => {
                     console.log(e);
-                    // proxy.cancelEvent(e);
+                    proxy.cancelEvent(e);
                     proxy.isShowMenu = !proxy.isShowMenu;
                 },
-                blur: (e) => {
+                focusout: (e) => {
                     console.log(e);
-                    // proxy.cancelEvent(e);
-                    proxy.onBlur(e);
+                    proxy.onFocusOut(e);
                 },
                 focus: (e) => {
                     console.log(e);
-                    // proxy.cancelEvent(e);
-                    // proxy.onFocus(e);
+                    proxy.cancelEvent(e);
+                    proxy.onFocus(e);
                 },
                 change: (e) => {
                     console.log(e);
@@ -358,7 +387,10 @@ export default {
             data,
             disp, // Gán giá trị
             autoHeight,
-            onBlur,
+            onFocusOut,
+            forcused,
+            onFocus
+
 
         };
     },

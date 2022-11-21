@@ -1,16 +1,12 @@
 <template>
-  <ms-tooltip :content="dataItem[displayField]" placement="right">
-    <li class="item-dropdown" tabindex="-1" @click="emitClick" @keyup.enter="emitClick" @keyup.space="emitClick">
-      <label class="text-item">{{ dataItem[displayField] }}</label>
-    </li>
-  </ms-tooltip>
+  <li class="item-dropdown" tabindex="-1" @click="emitClick" @keyup.enter="emitClick" @keyup.space="emitClick">
+    <label class="text-item">{{ dataItem[displayField] }}</label>
+  </li>
 </template>
 <script>
-import MsTooltip from "@/components/ms-control/tooltip/MsTooltip.vue";
 export default {
   name: "MsItem",
   components: {
-    MsTooltip,
   },
   props: {
     icon: {
@@ -31,30 +27,38 @@ export default {
     },
   },
   methods: {
+    /**
+     * Click vào item ropdown
+     * @param {*} e 
+     * @author DuongNhung
+     */
     emitClick(e) {
       console.log(e);
 
       this.$emit("menu-item-click", this.dataItem);
     },
   },
-  setup(props, { emit }) {
-    console.log(props, emit);
-    // const { proxy } = getCurrentInstance();
+  setup() {
 
     return {};
   },
 };
 </script>
 <style lang="scss" scoped>
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
 .item-dropdown {
   width: 100%;
-  height: 36px !important;
-  min-height: 36px;
+  height: 28px !important;
+  min-height: 28px;
   overflow: hidden;
   padding: 4px 0;
   outline: none;
   display: flex;
   align-items: center;
+  font-family: Roboto;
+  font-size: 14px;
+
 
   &:active,
   &:focus,
@@ -67,13 +71,12 @@ export default {
 
   &:hover {
     transition: 0.2s;
-    background-color: #5fd9a4;
+    background-color: #a2f399;
     cursor: pointer;
     border-radius: 4px;
 
   }
 
-  .selected {}
 
   .icon_left-dropdown {
     width: 36px;
@@ -93,6 +96,7 @@ export default {
 
 .selected {
   transition: 0.2s;
+  background-color: #a2f399;
 
   .inline-block {
     .item-dropdown {}

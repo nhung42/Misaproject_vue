@@ -1,27 +1,15 @@
 <template>
   <div :class="[isHidden && 'hidden']">
-    <div
-      ref="referenceRef"
-      class="inline-block"
-      @blur="hide"
-      @focus="show"
-      @mouseenter="show"
-      @mouseleave="hide"
-    >
+    <div ref="referenceRef" class="inline-block" @blur="hide" @focus="show" @mouseenter="show" @mouseleave="hide">
       <slot></slot>
-      <div
-        :class="['tooltip', top, left, right, bottom]"
-        ref="floatingRef"
-        :style="style"
-        v-show="isHidden"
-      >
+      <div :class="['tooltip', top, left, right, bottom]" ref="floatingRef" :style="style" v-show="isHidden">
         {{ content }}
       </div>
     </div>
   </div>
 </template>
 <script>
-import {ref, getCurrentInstance ,computed,onMounted,watch,reactive} from "vue";
+import { ref, getCurrentInstance, computed, onMounted, watch, reactive } from "vue";
 export default {
   name: "MsTooltip",
   props: {
@@ -103,7 +91,9 @@ export default {
         proxy.isHidden = true;
       }
     }
-
+    /**
+     * Hàm set style cho tooltip
+     */
     function setPosition() {
       let offset = proxy.$refs.referenceRef.getBoundingClientRect();
       let lengthContent = props.content || "";

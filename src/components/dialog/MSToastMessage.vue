@@ -20,7 +20,7 @@ export default {
   methods: {
     /**
      * Thực hiện đóng Toast
-     * Author: 
+     * Author: DuongNhung
      */
     closeOpenToast() {
       this.$emit('closeOpenToast')

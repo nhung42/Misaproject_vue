@@ -36,12 +36,15 @@ export default {
             default: false,
         },
     },
-    setup(props) {
+    setup() {
         const { proxy } = getCurrentInstance();
-
         const isValue = ref(false);
-        const changeValue = function (e) {
-            console.log(e);
+        /**
+         * Thay đổi giá trị chọn
+         * @param {*} 
+         * @author DuongNhung
+         */
+        const changeValue = function () {
             proxy.$emit("update:modelValue", proxy.isValue);
         };
 

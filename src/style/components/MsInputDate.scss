@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 // Override the css of date-picker library.
 .input-date__field {
     position: relative;
@@ -35,6 +36,17 @@
         .vuejs3-datepicker__value:active {
             border: 1px solid #50b83c;
         }
+        &calendar {
+            .cell {
+                .selected {
+                    background: #a2f399 !important;
+                    color: #fff;
+                }
+            }
+        }
+    }
+    .vuejs3-datepicker__calendar-topbar {
+        display: none !important;
     }
 }
 .datepicker--error .el-input__wrapper {

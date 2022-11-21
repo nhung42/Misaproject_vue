@@ -10,8 +10,13 @@
                                     <ms-checkbox v-model="allSelected"></ms-checkbox>
                                 </div>
                             </th>
+
                             <th ref="th" v-for="col in columns" :key="col" :config="col">
-                                {{ col.title }}
+                                <ms-tooltip
+                                    :content="col.title == resourceTable.lblTableEmployee.lblIdentityNumber ? 'Số Chứng Minh Nhân Dân' : ''"
+                                    placement="bottom" right="bottom">
+                                    {{ col.title }}
+                                </ms-tooltip>
                             </th>
                         </tr>
                     </thead>
@@ -97,11 +102,13 @@ import MsButton from "../ms-button/MsButton.vue";
 import MsSelect from "../ms-select-box/MsSelectBox.vue";
 import MsMessageBox from "@/components/dialog/MsMessageBox.vue";
 import Resource from "@/dictionary/resource";
+import resourceTable from "@/dictionary/resourceTable";
+import MsTooltip from "../tooltip/MsTooltip.vue";
 import axios from 'axios';
 
 export default defineComponent({
     name: "MsGrid",
-    components: { MsTr, MsCheckbox, MsEmployeePopup, MsSelect, MsMessageBox, MsButton },
+    components: { MsTr, MsCheckbox, MsEmployeePopup, MsSelect, MsMessageBox, MsButton, MsTooltip },
     props: {
         selectedCol: {
             default: false,
@@ -139,61 +146,108 @@ export default defineComponent({
         }
     },
     mounted() {
+        //Thực thi load  dữ liệu
         this.loadData()
     },
     watch: {
+        //Tìm kiếm và load lại dữ liệu
         search() {
             this.pageNumber = 1;
             this.loadData();
         },
+        //Load lại dữ liệu
         reloadData() {
             this.pageNumber = 1;
             this.loadData();
         }
     },
     methods: {
+        /**
+         * Gán giá trị pageSize được chọn
+         */
         getLimit(limit) {
             this.page.limit = limit;
             this.loadData();
         },
+        /**
+         * Gọi Api lấy tất cả nhân viên và phân trang tìm kiếm
+         * @uthor DuongNhung
+         */
         loadData() {
-            axios
-                .get(`https://amis.manhnv.net/api/v1/Employees/filter?pageSize=${this.page.limit}&pageNumber=${this.pageNumber}&employeeFilter=${this.search}`)
-                .then(response => {
-                    this.employeeData = response.data?.Data;
-                    this.employeeData = this.employeeData.map(x => {
-                        x.IsShowDelete = false;
-                        return x;
+            try {
+                axios
+                    .get(`https://amis.manhnv.net/api/v1/Employees/filter?pageSize=${this.page.limit}&pageNumber=${this.pageNumber}&employeeFilter=${this.search}`)
+                    .then(response => {
+                        this.employeeData = response.data?.Data;
+                        this.employeeData = this.employeeData.map(x => {
+                            x.IsShowDelete = false;
+                            return x;
+                        })
+                        this.toalRecord = response.data.TotalRecord;
                     })
-                    this.toalRecord = response.data.TotalRecord;
-                })
-        },
+                    .catch(function (error) {
+                        this.error = error.response.data.devMsg;
 
+                    });
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        },
+        /**
+         * Hàm gán giá trị pageNumber cho trang tiếp theo
+         * @author DuongNhung
+         */
         nextPage() {
-            if (Math.ceil(this.toalRecord / this.page.limit) > this.pageNumber) {
-                this.pageNumber++
-                this.loadData();
+            try {
+                if (Math.ceil(this.toalRecord / this.page.limit) > this.pageNumber) {
+                    this.pageNumber++
+                    this.loadData();
+                }
+            } catch (error) {
+                console.log(error);
             }
         },
+        /**
+       * Hàm gán giá trị pageNumber cho trang trước đó
+       * @author DuongNhung
+       */
         prevPage() {
-            if (this.pageNumber > 1) {
-                this.pageNumber--;
-                this.loadData();
+            try {
+                if (this.pageNumber > 1) {
+                    this.pageNumber--;
+                    this.loadData();
+                }
+            } catch (error) {
+                console.log(error);
             }
         },
+        /**
+         * Hàm đưa ra giá trị thứ tự bản ghi lấy ra của mỗi trang
+         * @param {*} total 
+         * @author DuongNhung
+         */
         pageUpdate(total) {
-            return `${this.page.limit * (this.pageNumber - 1) + 1} - ${this.page.limit * this.pageNumber > total
-                ? total
-                : this.page.limit * this.pageNumber
-                } `;
+            try {
+                return `${this.page.limit * (this.pageNumber - 1) + 1} - ${this.page.limit * this.pageNumber > total
+                    ? total
+                    : this.page.limit * this.pageNumber
+                    } `;
+            } catch (error) {
+                console.log(error);
+            }
         }
-
     },
     setup(props, { emit }) {
         const { proxy } = getCurrentInstance();
+        //State được chọn
         const selected = ref([]);
+        //State show popup
         const isShowPopup = ref(false);
+        //State show dialog muốn xóa 
         const isDialogMessDelete = ref(false);
+        //State show dialog hủy xóa
         const isDialogMessCancelDelete = ref(false);
         const employeeId = ref("");
         window.tables = proxy;
@@ -202,10 +256,10 @@ export default defineComponent({
             EmployeeId: "",
         });
         let pramData = ref({});
-
         const allSelected = ref(false);
         // Lấy ra những vị trí checked
         const selectedIndex = ref([]);
+        /**Lấy ra dữ liệu các vị trí được chọn */
         const dataSelected = computed(() =>
             selectedIndex.value.map((x, i) => x && proxy.allData[i] && proxy.allData[i].EmployeeId).filter((x) => x)
         );
@@ -236,24 +290,32 @@ export default defineComponent({
         /**
          * Hàm xử lí gọi dialog cảnh báo xoá
          * @param {*} id 
+         * @author DuongNhung
          */
         const handleDeleteData = function (id) {
-            console.log(id);
             proxy.employeeId = id;
             proxy.isDialogMessDelete = true;
         }
         /**
        * Call api xoá thông tin nhân viên
        * @param {*} 
-       * author DuongNhung
+       * @author DuongNhung
        */
         const deleteEmployee = (employeeId) => {
-            axios
-                .delete(`https://amis.manhnv.net/api/v1/Employees/${employeeId}`)
-                .then(() => {
-                    proxy.isDialogMessDelete = !proxy.isDialogMessDelete;
-                    proxy.loadData();
-                });
+            try {
+                axios
+                    .delete(`https://amis.manhnv.net/api/v1/Employees/${employeeId}`)
+                    .then(() => {
+                        proxy.isDialogMessDelete = !proxy.isDialogMessDelete;
+                        proxy.loadData();
+                    })
+                    .catch(function (error) {
+                        proxy.error = error.response.data.devMsg;
+
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         };
         /**
         * Xử lý sự kiện double click tr
@@ -268,6 +330,7 @@ export default defineComponent({
         /**
          * Xử lí sự kiện đóng popup
          * @param {*} 
+         * @author DuongNhung
          */
         const handlClosePopup = () => {
             proxy.isShowPopup = false;
@@ -293,27 +356,44 @@ export default defineComponent({
                 proxy.selectedIndex[index] = true;
             }
         };
-
+        /**
+         * Nhận giá trị item và gán data vào form Update
+         * @param {*} item 
+         * @author DuongNhung
+         */
         const handleEmitData = function (item) {
             console.log(item)
             proxy.pram.mode = Enum.Mode.Update;
             proxy.pramData = item;
             proxy.isShowPopup = true;
         }
+        /**
+         * Nhận giá trị item và gán data vào form Update
+         * @param {*} item 
+         * @author DuongNhung
+         */
+        const handlEmitDataDuplicate = function (item) {
+            console.log(item)
+            proxy.pram.mode = Enum.Mode.Duplicate;
+            proxy.pramData = item;
+            proxy.isShowPopup = true;
+        }
         onMounted(() => {
             proxy.eventBus.on("sendDataEmp", handleEmitData);
             proxy.eventBus.on("senDataEmpDelete", handleDeleteData);
+            proxy.eventBus.on("sendDataDuplicateEmp", handlEmitDataDuplicate);
         });
         onBeforeUnmount(() => {
             proxy.eventBus.off("sendDataEmp");
             proxy.eventBus.off("senDataEmpDelete");
-
+            proxy.eventBus.off("sendDataDuplicateEmp");
         });
         return {
             selected,
             dataSelected,
             handleDoubleClick,
             Resource,
+            resourceTable,
             pram,
             isShowPopup,
             allSelected,
@@ -337,6 +417,7 @@ export default defineComponent({
                 limit: 10,
                 offset: 0,
             },
+            error: "",
             pageLimit: [{ value: 10 }, { value: 20 }, { value: 50 }, { value: 100 }],
             employeeData: {},
         };
