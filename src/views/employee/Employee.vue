@@ -136,7 +136,7 @@ export default {
             {
                 id: 6,
                 field: "PositionName",
-                title: "Chức Danh",
+                title: "Chức danh",
                 type: "Text",
                 width: 110,
             },
@@ -150,7 +150,7 @@ export default {
             {
                 id: 8,
                 field: "BankAccountNumber",
-                title: "Số Tài khoản",
+                title: "Số tài khoản",
                 type: "Text",
                 width: 110,
             },
@@ -164,7 +164,7 @@ export default {
             {
                 id: 10,
                 field: "BankBranchName",
-                title: "Chi nhánh TK Ngân hàng",
+                title: "Chi nhánh TK ngân hàng",
                 type: "Text",
                 width: 160,
             },

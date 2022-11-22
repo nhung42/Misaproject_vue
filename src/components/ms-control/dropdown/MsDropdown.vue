@@ -315,30 +315,24 @@ export default {
         const eventListsioner = computed(() => {
             return {
                 click: (e) => {
-                    console.log(e);
                     proxy.cancelEvent(e);
                     proxy.isShowMenu = !proxy.isShowMenu;
                 },
                 focusout: (e) => {
-                    console.log(e);
                     proxy.onFocusOut(e);
                 },
                 focus: (e) => {
-                    console.log(e);
                     proxy.cancelEvent(e);
                     proxy.onFocus(e);
                 },
                 change: (e) => {
-                    console.log(e);
-                    // proxy.cancelEvent(e);
+                    proxy.cancelEvent(e);
                     // proxy.changeValue(e);
                 },
                 keydown: (e) => {
-                    console.log(e);
                     emit("keydown", e);
                 },
                 keyup: (e) => {
-                    console.log(e);
                     emit("keyup", e);
                 },
             };

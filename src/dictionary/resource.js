@@ -1,12 +1,12 @@
 export default {
     ErrorValidate: {
         employeeName: "Họ và tên không được để trống",
-        employeeCode: "Mã nhân viên không được để trống",
+        employeeCode: "Mã không được để trống",
         departmentName: "Đơn vị không được để trống"
     },
     ErrorInput: {
         EmployeeName: "Tên nhân viên không được để trống!",
-        EmployeeCode: "Mã nhân viên không được để trống!",
+        EmployeeCode: "Mã không được để trống!",
         DepartmentName: "Đơn vị không được để trống!"
     },
     TitleBtnDialog: {
@@ -52,7 +52,7 @@ export default {
             EN: ""
         },
         DeleteOneEmployee: {
-            VI: "Bạn có muốn xóa nhân viên ?",
+            VI: "Bạn có chắn chắn muốn xóa nhân viên này không ?",
             EN: ""
         },
         DeleteMultiple: {

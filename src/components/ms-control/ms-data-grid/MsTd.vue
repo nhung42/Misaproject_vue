@@ -290,12 +290,12 @@ export default {
   position: absolute;
   top: 25px;
   right: 16px;
+  border: 1px solid #babec5;
 
 
   .option_function {
     cursor: pointer;
     padding: 5px 10px;
-    border: 1px solid #babec5;
   }
 
   .option:hover {

@@ -15,7 +15,7 @@
                             </div>
                             <div class="checkbox-type">
                                 <input type="checkbox" id="supplier" name="supplier" value="supplier" class="m-checkbox"
-                                    tabindex="23">
+                                    tabindex="23" ref="lastIndex">
                                 <label for="supplier"> Là nhà cung cấp</label><br>
                             </div>
                         </div>
@@ -80,15 +80,20 @@
                                 <div class="input-wrapper flex-1 margin-left-10px">
                                     <label class="m-input__label" for="">Giới tính</label>
                                     <div class="form__radio display-flex">
-                                        <input class="radio" type="radio" id="rdMale" tabindex="6" name="gender"
-                                            value="nam" v-model="dataForm.GenderName" /><span
-                                            class="radio__title">Nam</span>
-                                        <input class="radio" type="radio" id="rdFemale" name="gender" tabindex="7"
-                                            value="nu" v-model="dataForm.GenderName" /><span
-                                            class="radio__title">Nữ</span>
-                                        <input class="radio" type="radio" id="rdOther" name="gender" tabindex="8"
-                                            value="khac" v-model="dataForm.GenderName" /><span
-                                            class="radio__title">Khác</span>
+                                        <div tabindex="6">
+                                            <input class="radio" type="radio" id="rdMale" name="gender" value="1"
+                                                v-model="dataForm.Gender" :checked="dataForm.Gender === 1" />
+                                        </div><span class="radio__title">Nam</span>
+                                        <div tabindex="7">
+                                            <input class="radio" type="radio" id="rdFemale" name="gender" value="0"
+                                                v-model="dataForm.Gender" :checked="dataForm.Gender === 0" />
+                                        </div><span class="radio__title">Nữ</span>
+
+                                        <div tabindex="8">
+                                            <input class="radio" type="radio" id="rdOther" name="gender" value="2"
+                                                v-model="dataForm.Gender" :checked="dataForm.Gender === 2" />
+                                        </div><span class="radio__title">Khác</span>
+
                                     </div>
                                 </div>
                             </div>
@@ -165,11 +170,11 @@
                         </v-tooltip>
                         <div class="right__button">
                             <v-tooltip content="Cất" placement="top" right="top">
-                                <v-button text="Cất" tabindex="20" type="secodary" @click="saveData" radius>
+                                <v-button text="Cất" tabindex="20" type="secodary" @click="saveData(true)" radius>
                                 </v-button>
                             </v-tooltip>
                             <v-tooltip content="Cất và thêm" placement="top" right="top">
-                                <v-button text="Cất và thêm" @click="saveData" tabindex="21" radius></v-button>
+                                <v-button text="Cất và thêm" @click="saveData(false)" tabindex="21" radius></v-button>
                             </v-tooltip>
                         </div>
                     </div>
@@ -193,7 +198,7 @@
         <ms-message-box leftIcon="icon-warring" title="Thông báo"
             :textMessageBox="Resource.TitleDialogMessage.SaveUpdate.VI" :disabledValueLeft="false"
             :disabledValueRight="false" v-if="isDialogMessUpdate">
-            <v-button :text="Resource.TitleBtnDialog.Save.VI" radius @click="updateData"></v-button>
+            <v-button :text="Resource.TitleBtnDialog.Save.VI" radius @click="updateData(true)"></v-button>
             <v-button :text="Resource.TitleBtnDialog.Cancel.VI" type="secodary" radius></v-button>
         </ms-message-box>
     </teleport>
@@ -219,7 +224,7 @@
     </teleport>
     <!-- Toast message update thành công -->
     <teleport to='body'>
-        <ms-message v-if="isShowMessageUpdate" toastAct=" Sửa">
+        <ms-message v-if="isShowMessageUpdate" toastAct=" Sửa" @closeOpenToast="closeOpenToast">
         </ms-message>
     </teleport>
 </template>
@@ -246,7 +251,6 @@ import ResourceTable from "@/dictionary/resourceTable";
 import Enum from "@/dictionary/enum.js";
 import axios from "axios";
 import MsMessage from "@/components/dialog/MSToastMessage.vue";
-
 
 export default {
     name: "MsPopupEmployee",
@@ -281,12 +285,20 @@ export default {
             this.$parent.close();
         },
         /**
-         * Hàm đóng toast message
+         * Hàm đóng toast message khi cất hoặc thêm
          * author Duong Nhung
          */
         closeOpenToast() {
-            this.isShowMessage = !this.isShowMessage
-            this.$emit('closePopup');
+
+            if (this.closeForm === true) {
+                this.isShowMessage = !this.isShowMessage
+                console.log(this.closeForm);
+                this.$emit('closePopup');
+            }
+            else {
+                this.isShowMessage = !this.isShowMessage;
+                this.dataForm = { ...this.dataFormNull };
+            }
         }
     },
     emits: ["closePopup"],
@@ -314,6 +326,7 @@ export default {
         //State submit
         const isSubmited = ref(false);
         //Dữ liệu form
+        const closeForm = ref(false);
         const dataForm = ref({
             Mode: 0,
             EmployeeCode: "",
@@ -339,7 +352,31 @@ export default {
             Modified_by: "",
             Modified_date: "",
         });
-
+        const dataFormNull = ref({
+            Mode: 0,
+            EmployeeCode: "",
+            EmployeeName: "",
+            DateOfBirth: "",
+            PositionCode: "",
+            PositionName: "",
+            DepartmentId: "",
+            DepartmentCode: "",
+            DepartmentName: "",
+            IdentityNumber: "",
+            IdentityDate: "",
+            IdentityPlace: "",
+            Gender: 1,
+            GenderName: "",
+            Address: "",
+            PhoneNumber: "",
+            phone: "",
+            Email: "",
+            BankAccount: "",
+            BankName: "",
+            BankBranchName: "",
+            Modified_by: "",
+            Modified_date: "",
+        });
         // Validate form
         const dataFormValidate = computed(() => {
             return {
@@ -389,8 +426,6 @@ export default {
                     .post("https://amis.manhnv.net/api/v1/Employees", obj)
                     .then((res) => {
                         console.log("post:", res.data);
-                        // eslint-disable-next-line no-debugger
-                        debugger
                         proxy.isShowMessage = true;
                     })
                     .catch(function (error) {
@@ -431,25 +466,30 @@ export default {
          * @author DuongNhung
          */
         const getGender = () => {
-            if (proxy.dataForm.GenderName == 'Nam') {
-                proxy.dataForm.Gender = 1;
+            if (proxy.dataForm.Gender === 1) {
+                proxy.dataForm.GenderName = "Nam";
             }
-            if (proxy.dataForm.GenderName == 'Nữ') {
-                proxy.dataForm.Gender = 0;
+            if (proxy.dataForm.GenderName === 0) {
+                proxy.dataForm.GenderName = "Nữ"
             }
             else {
-                proxy.dataForm.Gender = 2;
+                proxy.dataForm.GenderName = "Khác";
             }
         }
         /**
          * Sửa thông thin nhân viên,load lại data
          * @author DuongNhung
          */
-        const updateData = () => {
-            proxy.isDialogMessUpdate = false;
-            proxy.updateEmployee(dataForm.value);
-            proxy.isShowPopup = false;
-
+        const updateData = (close) => {
+            if (proxy.validateData() == false) {
+                proxy.isShowDialogDetail = true;
+            }
+            else {
+                proxy.closeForm = close;
+                proxy.isDialogMessUpdate = false;
+                proxy.updateEmployee(dataForm.value);
+                proxy.isShowPopup = false;
+            }
         }
         //Sự kiện close error message Multiple Error
         const handleCloseErrorMultiple = () => {
@@ -540,6 +580,7 @@ export default {
             proxy.dataForm.DepartmentId = item.DepartmentId;
             proxy.dataForm.DepartmentCode = item.DepartmentCode;
             proxy.dataForm.DepartmentName = item.DepartmentName;
+            proxy.errorMessage.departmentName = false;
         };
         /**
          * Hàm gán giá trị của input dropdown khi blur ra khỏi ô input
@@ -698,11 +739,12 @@ export default {
          * Save Data
          * @author DuongNhung
          */
-        const saveData = () => {
+        const saveData = (close) => {
             try {
                 if (proxy.validateData() == false) {
                     proxy.isShowDialogDetail = true;
                 } else {
+                    proxy.closeForm = close;
                     switch (proxy.formModel.mode) {
                         //Kiểm tra giá trị mode là cập nhật
                         case Enum.Mode.Update: {
@@ -711,7 +753,6 @@ export default {
                         }
                         //Kiểm tra giá trị mode 
                         case (Enum.Mode.Add): {
-
                             proxy.addEmployee(dataForm.value);
                             break;
                         }
@@ -760,11 +801,13 @@ export default {
             DataDepartment,
             isShowDialogDetail,
             isDialogError,
+            closeForm,
             loadDataDepartment,
             clickDataDepartment,
             updateData,
             focusInput,
             dataForm,
+            dataFormNull,
             getGender,
             changeValueInput,
             addEmployee,

@@ -62,10 +62,11 @@
     </div>
     <!-- Dialog xóa 1 dòng -->
     <teleport to="body">
-        <ms-message-box :disabledTop="false" :title="Resource.TitleDialog.DeleteOneEmployee" leftIcon="icon-warring"
+        <ms-message-box :disabledTop="false" :title="Resource.TitleDialog.DeleteOneEmployee" leftIcon=""
             :valueMessageBox="valueMessageBox" :textMessageBox="Resource.TitleDialogMessage.DeleteOneEmployee.VI"
-            :disabledValueLeft="false" :disabledValueRight="true" v-if="isDialogMessDelete">
-            <ms-button :text="Resource.TitleBtnDialog.Delete.VI" @click="deleteEmployee(employeeId)" radius></ms-button>
+            :disabledValueLeft="false" :disabledValueRight="false" v-if="isDialogMessDelete">
+            <ms-button :text="Resource.TitleBtnDialog.Delete.VI" type="dangerous" @click="deleteEmployee(employeeId)"
+                radius></ms-button>
             <ms-button :text="Resource.TitleBtnDialog.NoCancel.VI" type="secodary" @click="isDialogMessDelete = false"
                 radius>
             </ms-button>
@@ -79,6 +80,10 @@
             :disabledValueRight="false" v-if="isDialogMessCancelDelete">
             <ms-button :text="Resource.TitleBtnDialog.Close.VI" radius></ms-button>
         </ms-message-box>
+    </teleport>
+    <!-- Loading form -->
+    <teleport to="body">
+        <ms-loading v-if="isLoading"></ms-loading>
     </teleport>
 </template>
 <script>
@@ -105,10 +110,11 @@ import Resource from "@/dictionary/resource";
 import resourceTable from "@/dictionary/resourceTable";
 import MsTooltip from "../tooltip/MsTooltip.vue";
 import axios from 'axios';
+import MsLoading from "../loading/MsLoading.vue";
 
 export default defineComponent({
     name: "MsGrid",
-    components: { MsTr, MsCheckbox, MsEmployeePopup, MsSelect, MsMessageBox, MsButton, MsTooltip },
+    components: { MsTr, MsCheckbox, MsEmployeePopup, MsSelect, MsMessageBox, MsButton, MsTooltip, MsLoading },
     props: {
         selectedCol: {
             default: false,
@@ -175,9 +181,11 @@ export default defineComponent({
          */
         loadData() {
             try {
+                this.isLoading = true;
                 axios
                     .get(`https://amis.manhnv.net/api/v1/Employees/filter?pageSize=${this.page.limit}&pageNumber=${this.pageNumber}&employeeFilter=${this.search}`)
                     .then(response => {
+                        this.isLoading = false;
                         this.employeeData = response.data?.Data;
                         this.employeeData = this.employeeData.map(x => {
                             x.IsShowDelete = false;
@@ -261,7 +269,7 @@ export default defineComponent({
         const selectedIndex = ref([]);
         /**Lấy ra dữ liệu các vị trí được chọn */
         const dataSelected = computed(() =>
-            selectedIndex.value.map((x, i) => x && proxy.allData[i] && proxy.allData[i].EmployeeId).filter((x) => x)
+            selectedIndex.value.map((x, i) => x && proxy.employeeData[i] && proxy.employeeData[i].EmployeeId).filter((x) => x)
         );
         // Cập nhật dataSelected vào selectedData
         onMounted(() => {
@@ -281,7 +289,7 @@ export default defineComponent({
             () => allSelected.value,
             (newVal) => {
                 if (newVal) {
-                    proxy.selectedIndex = proxy.allData.map((x) => x);
+                    proxy.selectedIndex = proxy.employeeData.map((x) => x);
                 } else {
                     proxy.selectedIndex = [];
                 }
@@ -362,7 +370,6 @@ export default defineComponent({
          * @author DuongNhung
          */
         const handleEmitData = function (item) {
-            console.log(item)
             proxy.pram.mode = Enum.Mode.Update;
             proxy.pramData = item;
             proxy.isShowPopup = true;
@@ -373,7 +380,6 @@ export default defineComponent({
          * @author DuongNhung
          */
         const handlEmitDataDuplicate = function (item) {
-            console.log(item)
             proxy.pram.mode = Enum.Mode.Duplicate;
             proxy.pramData = item;
             proxy.isShowPopup = true;
@@ -382,6 +388,7 @@ export default defineComponent({
             proxy.eventBus.on("sendDataEmp", handleEmitData);
             proxy.eventBus.on("senDataEmpDelete", handleDeleteData);
             proxy.eventBus.on("sendDataDuplicateEmp", handlEmitDataDuplicate);
+
         });
         onBeforeUnmount(() => {
             proxy.eventBus.off("sendDataEmp");
@@ -420,6 +427,7 @@ export default defineComponent({
             error: "",
             pageLimit: [{ value: 10 }, { value: 20 }, { value: 50 }, { value: 100 }],
             employeeData: {},
+            isLoading: false,
         };
     },
 
